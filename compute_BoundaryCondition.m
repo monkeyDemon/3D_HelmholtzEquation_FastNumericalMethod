@@ -15,18 +15,12 @@ h=(Xend-Xstart)/(1+M);
 
 x=Xstart+h*i;
 y=Ystart+h*j;
-z=Zstart+h*j;
-
-
-if( i>=1 && i<=M && j>=1 && j<=N && k>=1 && k<=K)
-	a=10086
-end
-
+z=Zstart+h*k;
 
 
 if(i==0)
 	value=sin(pi*y)*sin(pi*z);
-elseif(i==k)
+elseif(i==M+1)
 	value=2*sin(pi*y)*sin(pi*z);
 else
 	value=0;
