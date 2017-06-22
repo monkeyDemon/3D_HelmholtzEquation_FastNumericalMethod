@@ -12,198 +12,198 @@ para2=1/(6*h^2);
 if( i==1 && j==1  )
 	for k=1:K
 		if(k==1)
-			temp=compute_BoundaryCondition(0,j,k)+compute_BoundaryCondition(i,0,k)+compute_BoundaryCondition(i,j,0);
+			temp=compute_BoundaryCondition(h,0,j,k)+compute_BoundaryCondition(h,i,0,k)+compute_BoundaryCondition(h,i,j,0);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(0,0,k)+compute_BoundaryCondition(0,j,0)-4*compute_BoundaryCondition(0,j,k)+compute_BoundaryCondition(0,j,k+1)+compute_BoundaryCondition(0,j+1,k)+compute_BoundaryCondition(i,0,0)-4*compute_BoundaryCondition(i,0,k)+compute_BoundaryCondition(i,0,k+1)-4*compute_BoundaryCondition(i,j,0)+compute_BoundaryCondition(i,j+1,0)+compute_BoundaryCondition(i+1,0,k)+compute_BoundaryCondition(i+1,j,0);
+			temp=compute_BoundaryCondition(h,0,0,k)+compute_BoundaryCondition(h,0,j,0)-4*compute_BoundaryCondition(h,0,j,k)+compute_BoundaryCondition(h,0,j,k+1)+compute_BoundaryCondition(h,0,j+1,k)+compute_BoundaryCondition(h,i,0,0)-4*compute_BoundaryCondition(h,i,0,k)+compute_BoundaryCondition(h,i,0,k+1)-4*compute_BoundaryCondition(h,i,j,0)+compute_BoundaryCondition(h,i,j+1,0)+compute_BoundaryCondition(h,i+1,0,k)+compute_BoundaryCondition(h,i+1,j,0);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		elseif(k==K)
-			temp=compute_BoundaryCondition(0,j,k)+compute_BoundaryCondition(i,0,k);
-			temp_gama=compute_BoundaryCondition(i,j,K+1);
+			temp=compute_BoundaryCondition(h,0,j,k)+compute_BoundaryCondition(h,i,0,k);
+			temp_gama=compute_BoundaryCondition(h,i,j,K+1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
 			BU_gama(k)=BU_gama(k)+temp_gama*para1;
-			temp=compute_BoundaryCondition(0,0,k)+compute_BoundaryCondition(0,j,k-1)-4*compute_BoundaryCondition(0,j,k)+compute_BoundaryCondition(0,j,k+1)+compute_BoundaryCondition(0,j+1,k)+compute_BoundaryCondition(i,0,k-1)-4*compute_BoundaryCondition(i,0,k)+compute_BoundaryCondition(i,0,k+1)+compute_BoundaryCondition(i+1,0,k);
-			temp_gama=-4*compute_BoundaryCondition(i,j,k+1)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j,k+1);
+			temp=compute_BoundaryCondition(h,0,0,k)+compute_BoundaryCondition(h,0,j,k-1)-4*compute_BoundaryCondition(h,0,j,k)+compute_BoundaryCondition(h,0,j,k+1)+compute_BoundaryCondition(h,0,j+1,k)+compute_BoundaryCondition(h,i,0,k-1)-4*compute_BoundaryCondition(h,i,0,k)+compute_BoundaryCondition(h,i,0,k+1)+compute_BoundaryCondition(h,i+1,0,k);
+			temp_gama=-4*compute_BoundaryCondition(h,i,j,k+1)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 			BU_gama(k)=BU_gama(k)+temp_gama*para2;
 		else
-			temp=compute_BoundaryCondition(0,j,k)+compute_BoundaryCondition(i,0,k);
+			temp=compute_BoundaryCondition(h,0,j,k)+compute_BoundaryCondition(h,i,0,k);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(0,0,k)+compute_BoundaryCondition(0,j,k-1)-4*compute_BoundaryCondition(0,j,k)+compute_BoundaryCondition(0,j,k+1)+compute_BoundaryCondition(0,j+1,k)+compute_BoundaryCondition(i,0,k-1)-4*compute_BoundaryCondition(i,0,k)+compute_BoundaryCondition(i,0,k+1)+compute_BoundaryCondition(i+1,0,k);
+			temp=compute_BoundaryCondition(h,0,0,k)+compute_BoundaryCondition(h,0,j,k-1)-4*compute_BoundaryCondition(h,0,j,k)+compute_BoundaryCondition(h,0,j,k+1)+compute_BoundaryCondition(h,0,j+1,k)+compute_BoundaryCondition(h,i,0,k-1)-4*compute_BoundaryCondition(h,i,0,k)+compute_BoundaryCondition(h,i,0,k+1)+compute_BoundaryCondition(h,i+1,0,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		end
 	end
 elseif( i==1 && j==N  )
 	for k=1:K
 		if(k==1)
-			temp=compute_BoundaryCondition(i-1,j,k)+compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j,k-1);
+			temp=compute_BoundaryCondition(h,i-1,j,k)+compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j,k-1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i-1,j,k-1)-4*compute_BoundaryCondition(i-1,j,k)+compute_BoundaryCondition(i-1,j,k+1)+compute_BoundaryCondition(i-1,j+1,k)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j,k-1)+compute_BoundaryCondition(i,j+1,k-1)-4*compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j,k-1)+compute_BoundaryCondition(i+1,j+1,k);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i-1,j,k-1)-4*compute_BoundaryCondition(h,i-1,j,k)+compute_BoundaryCondition(h,i-1,j,k+1)+compute_BoundaryCondition(h,i-1,j+1,k)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j,k-1)+compute_BoundaryCondition(h,i,j+1,k-1)-4*compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j,k-1)+compute_BoundaryCondition(h,i+1,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		elseif(k==K)
-			temp=compute_BoundaryCondition(i-1,j,k)+compute_BoundaryCondition(i,j+1,k);
-			temp_gama=compute_BoundaryCondition(i,j,k+1);
+			temp=compute_BoundaryCondition(h,i-1,j,k)+compute_BoundaryCondition(h,i,j+1,k);
+			temp_gama=compute_BoundaryCondition(h,i,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
 			BU_gama(k)=BU_gama(k)+temp_gama*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i-1,j,k-1)-4*compute_BoundaryCondition(i-1,j,k)+compute_BoundaryCondition(i-1,j,k+1)+compute_BoundaryCondition(i-1,j+1,k)+compute_BoundaryCondition(i,j+1,k-1)-4*compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j+1,k);
-			temp_gama=compute_BoundaryCondition(i,j-1,k+1)-4*compute_BoundaryCondition(i,j,k+1)+compute_BoundaryCondition(i+1,j,k+1);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i-1,j,k-1)-4*compute_BoundaryCondition(h,i-1,j,k)+compute_BoundaryCondition(h,i-1,j,k+1)+compute_BoundaryCondition(h,i-1,j+1,k)+compute_BoundaryCondition(h,i,j+1,k-1)-4*compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
+			temp_gama=compute_BoundaryCondition(h,i,j-1,k+1)-4*compute_BoundaryCondition(h,i,j,k+1)+compute_BoundaryCondition(h,i+1,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 			BU_gama(k)=BU_gama(k)+temp_gama*para2;
 		else
-			temp=compute_BoundaryCondition(i-1,j,k)+compute_BoundaryCondition(i,j+1,k);
+			temp=compute_BoundaryCondition(h,i-1,j,k)+compute_BoundaryCondition(h,i,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i-1,j,k-1)-4*compute_BoundaryCondition(i-1,j,k)+compute_BoundaryCondition(i-1,j,k+1)+compute_BoundaryCondition(i-1,j+1,k)+compute_BoundaryCondition(i,j+1,k-1)-4*compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j+1,k);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i-1,j,k-1)-4*compute_BoundaryCondition(h,i-1,j,k)+compute_BoundaryCondition(h,i-1,j,k+1)+compute_BoundaryCondition(h,i-1,j+1,k)+compute_BoundaryCondition(h,i,j+1,k-1)-4*compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		end
 	end
 elseif( i==1 && j>1 && j<N  )
 	for k=1:K
 		if(k==1)
-			temp=compute_BoundaryCondition(i-1,j,k)+compute_BoundaryCondition(i,j,k-1);
+			temp=compute_BoundaryCondition(h,i-1,j,k)+compute_BoundaryCondition(h,i,j,k-1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i-1,j,k-1)-4*compute_BoundaryCondition(i-1,j,k)+compute_BoundaryCondition(i-1,j,k+1)+compute_BoundaryCondition(i-1,j+1,k)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j,k-1)+compute_BoundaryCondition(i,j+1,k-1)+compute_BoundaryCondition(i+1,j,k-1);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i-1,j,k-1)-4*compute_BoundaryCondition(h,i-1,j,k)+compute_BoundaryCondition(h,i-1,j,k+1)+compute_BoundaryCondition(h,i-1,j+1,k)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j,k-1)+compute_BoundaryCondition(h,i,j+1,k-1)+compute_BoundaryCondition(h,i+1,j,k-1);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		elseif(k==K)
-			temp=compute_BoundaryCondition(i-1,j,k);
-			temp_gama=compute_BoundaryCondition(i,j,k+1);
+			temp=compute_BoundaryCondition(h,i-1,j,k);
+			temp_gama=compute_BoundaryCondition(h,i,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
 			BU_gama(k)=BU_gama(k)+temp_gama*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i-1,j,k-1)-4*compute_BoundaryCondition(i-1,j,k)+compute_BoundaryCondition(i-1,j,k+1)+compute_BoundaryCondition(i-1,j+1,k);
-			temp_gama=compute_BoundaryCondition(i,j-1,k+1)-4*compute_BoundaryCondition(i,j,k+1)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j,k+1);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i-1,j,k-1)-4*compute_BoundaryCondition(h,i-1,j,k)+compute_BoundaryCondition(h,i-1,j,k+1)+compute_BoundaryCondition(h,i-1,j+1,k);
+			temp_gama=compute_BoundaryCondition(h,i,j-1,k+1)-4*compute_BoundaryCondition(h,i,j,k+1)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 			BU_gama(k)=BU_gama(k)+temp_gama*para2;
 		else
-			temp=compute_BoundaryCondition(i-1,j,k);
+			temp=compute_BoundaryCondition(h,i-1,j,k);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i-1,j,k-1)-4*compute_BoundaryCondition(i-1,j,k)+compute_BoundaryCondition(i-1,j,k+1)+compute_BoundaryCondition(i-1,j+1,k);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i-1,j,k-1)-4*compute_BoundaryCondition(h,i-1,j,k)+compute_BoundaryCondition(h,i-1,j,k+1)+compute_BoundaryCondition(h,i-1,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		end
 	end
 elseif( i==M && j==1 )
 	for k=1:K
 		if(k==1)
-			temp=compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i,j-1,k)+compute_BoundaryCondition(i,j,k-1);
+			temp=compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i,j-1,k)+compute_BoundaryCondition(h,i,j,k-1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i-1,j,k-1)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j-1,k)+compute_BoundaryCondition(i,j-1,k+1)-4*compute_BoundaryCondition(i,j,k-1)+compute_BoundaryCondition(i,j+1,k-1)+compute_BoundaryCondition(i+1,j-1,k)+compute_BoundaryCondition(i+1,j,k-1)-4*compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i+1,j,k+1)+compute_BoundaryCondition(i+1,j+1,k);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i-1,j,k-1)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j-1,k)+compute_BoundaryCondition(h,i,j-1,k+1)-4*compute_BoundaryCondition(h,i,j,k-1)+compute_BoundaryCondition(h,i,j+1,k-1)+compute_BoundaryCondition(h,i+1,j-1,k)+compute_BoundaryCondition(h,i+1,j,k-1)-4*compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i+1,j,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		elseif(k==K)
-			temp=compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i,j-1,k);
-			temp_gama=compute_BoundaryCondition(i,j,k+1);
+			temp=compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i,j-1,k);
+			temp_gama=compute_BoundaryCondition(h,i,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
 			BU_gama(k)=BU_gama(k)+temp_gama*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j-1,k)+compute_BoundaryCondition(i,j-1,k+1)+compute_BoundaryCondition(i+1,j-1,k)+compute_BoundaryCondition(i+1,j,k-1)-4*compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i+1,j,k+1)+compute_BoundaryCondition(i+1,j+1,k);
-			temp_gama=compute_BoundaryCondition(i-1,j,k+1)-4*compute_BoundaryCondition(i,j,k+1)+compute_BoundaryCondition(i,j+1,k+1);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j-1,k)+compute_BoundaryCondition(h,i,j-1,k+1)+compute_BoundaryCondition(h,i+1,j-1,k)+compute_BoundaryCondition(h,i+1,j,k-1)-4*compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i+1,j,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
+			temp_gama=compute_BoundaryCondition(h,i-1,j,k+1)-4*compute_BoundaryCondition(h,i,j,k+1)+compute_BoundaryCondition(h,i,j+1,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 			BU_gama(k)=BU_gama(k)+temp_gama*para2;
 		else
-			temp=compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i,j-1,k);
+			temp=compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i,j-1,k);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j-1,k)+compute_BoundaryCondition(i,j-1,k+1)+compute_BoundaryCondition(i+1,j-1,k)+compute_BoundaryCondition(i+1,j,k-1)-4*compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i+1,j,k+1)+compute_BoundaryCondition(i+1,j+1,k);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j-1,k)+compute_BoundaryCondition(h,i,j-1,k+1)+compute_BoundaryCondition(h,i+1,j-1,k)+compute_BoundaryCondition(h,i+1,j,k-1)-4*compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i+1,j,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		end
 	end
 elseif( i==M && j==N )
 	for k=1:K
 		if(k==1)
-			temp=compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j,k-1);
+			temp=compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j,k-1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j,k-1)+compute_BoundaryCondition(i-1,j+1,k)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j,k-1)+compute_BoundaryCondition(i,j+1,k-1)-4*compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j-1,k)+compute_BoundaryCondition(i+1,j,k-1)-4*compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i+1,j,k+1)+compute_BoundaryCondition(i+1,j+1,k);
+			temp=compute_BoundaryCondition(h,i-1,j,k-1)+compute_BoundaryCondition(h,i-1,j+1,k)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j,k-1)+compute_BoundaryCondition(h,i,j+1,k-1)-4*compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j-1,k)+compute_BoundaryCondition(h,i+1,j,k-1)-4*compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i+1,j,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		elseif(k==K)
-			temp=compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i,j+1,k);
-			temp_gama=compute_BoundaryCondition(i,j,k+1);
+			temp=compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i,j+1,k);
+			temp_gama=compute_BoundaryCondition(h,i,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
 			BU_gama(k)=BU_gama(k)+temp_gama*para1;
-			temp=compute_BoundaryCondition(i-1,j+1,k)+compute_BoundaryCondition(i,j+1,k-1)-4*compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j-1,k)+compute_BoundaryCondition(i+1,j,k-1)-4*compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i+1,j,k+1)+compute_BoundaryCondition(i+1,j+1,k);
-			temp_gama=compute_BoundaryCondition(i-1,j,k+1)+compute_BoundaryCondition(i,j-1,k+1)-4*compute_BoundaryCondition(i,j,k+1);
+			temp=compute_BoundaryCondition(h,i-1,j+1,k)+compute_BoundaryCondition(h,i,j+1,k-1)-4*compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j-1,k)+compute_BoundaryCondition(h,i+1,j,k-1)-4*compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i+1,j,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
+			temp_gama=compute_BoundaryCondition(h,i-1,j,k+1)+compute_BoundaryCondition(h,i,j-1,k+1)-4*compute_BoundaryCondition(h,i,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 			BU_gama(k)=BU_gama(k)+temp_gama*para2;
 		else
-			temp=compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i,j+1,k);
+			temp=compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j+1,k)+compute_BoundaryCondition(i,j+1,k-1)-4*compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j-1,k)+compute_BoundaryCondition(i+1,j,k-1)-4*compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i+1,j,k+1)+compute_BoundaryCondition(i+1,j+1,k);
+			temp=compute_BoundaryCondition(h,i-1,j+1,k)+compute_BoundaryCondition(h,i,j+1,k-1)-4*compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j-1,k)+compute_BoundaryCondition(h,i+1,j,k-1)-4*compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i+1,j,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		end
 	end
 elseif( i==M && j>1 && j<N  )
 	for k=1:K
 		if(k==1)
-			temp=compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i,j,k-1);
+			temp=compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i,j,k-1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j,k-1)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j,k-1)+compute_BoundaryCondition(i,j+1,k-1)+compute_BoundaryCondition(i+1,j-1,k)+compute_BoundaryCondition(i+1,j,k-1)-4*compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i+1,j,k+1)+compute_BoundaryCondition(i+1,j+1,k);
+			temp=compute_BoundaryCondition(h,i-1,j,k-1)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j,k-1)+compute_BoundaryCondition(h,i,j+1,k-1)+compute_BoundaryCondition(h,i+1,j-1,k)+compute_BoundaryCondition(h,i+1,j,k-1)-4*compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i+1,j,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		elseif(k==K)
-			temp=compute_BoundaryCondition(i+1,j,k);
-			temp_gama=compute_BoundaryCondition(i,j,k+1);
+			temp=compute_BoundaryCondition(h,i+1,j,k);
+			temp_gama=compute_BoundaryCondition(h,i,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
 			BU_gama(k)=BU_gama(k)+temp_gama*para1;
-			temp=compute_BoundaryCondition(i+1,j-1,k)+compute_BoundaryCondition(i+1,j,k-1)-4*compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i+1,j,k+1)+compute_BoundaryCondition(i+1,j+1,k);
-			temp_gama=compute_BoundaryCondition(i-1,j,k+1)+compute_BoundaryCondition(i,j-1,k+1)-4*compute_BoundaryCondition(i,j,k+1)+compute_BoundaryCondition(i,j+1,k+1);
+			temp=compute_BoundaryCondition(h,i+1,j-1,k)+compute_BoundaryCondition(h,i+1,j,k-1)-4*compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i+1,j,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
+			temp_gama=compute_BoundaryCondition(h,i-1,j,k+1)+compute_BoundaryCondition(h,i,j-1,k+1)-4*compute_BoundaryCondition(h,i,j,k+1)+compute_BoundaryCondition(h,i,j+1,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 			BU_gama(k)=BU_gama(k)+temp_gama*para2;
 		else
-			temp=compute_BoundaryCondition(i+1,j,k);
+			temp=compute_BoundaryCondition(h,i+1,j,k);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i+1,j-1,k)+compute_BoundaryCondition(i+1,j,k-1)-4*compute_BoundaryCondition(i+1,j,k)+compute_BoundaryCondition(i+1,j,k+1)+compute_BoundaryCondition(i+1,j+1,k);
+			temp=compute_BoundaryCondition(h,i+1,j-1,k)+compute_BoundaryCondition(h,i+1,j,k-1)-4*compute_BoundaryCondition(h,i+1,j,k)+compute_BoundaryCondition(h,i+1,j,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		end
 	end
 elseif( i>1 && i<M && j==1  )
 	for k=1:K
 		if(k==1)
-			temp=compute_BoundaryCondition(i,j-1,k)+compute_BoundaryCondition(i,j,k-1);
+			temp=compute_BoundaryCondition(h,i,j-1,k)+compute_BoundaryCondition(h,i,j,k-1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i-1,j,k-1)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j-1,k)+compute_BoundaryCondition(i,j-1,k+1)-4*compute_BoundaryCondition(i,j,k-1)+compute_BoundaryCondition(i,j+1,k-1)+compute_BoundaryCondition(i+1,j-1,k)+compute_BoundaryCondition(i+1,j,k-1);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i-1,j,k-1)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j-1,k)+compute_BoundaryCondition(h,i,j-1,k+1)-4*compute_BoundaryCondition(h,i,j,k-1)+compute_BoundaryCondition(h,i,j+1,k-1)+compute_BoundaryCondition(h,i+1,j-1,k)+compute_BoundaryCondition(h,i+1,j,k-1);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		elseif(k==K)
-			temp=compute_BoundaryCondition(i,j-1,k);
-			temp_gama=compute_BoundaryCondition(i,j,k+1);
+			temp=compute_BoundaryCondition(h,i,j-1,k);
+			temp_gama=compute_BoundaryCondition(h,i,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
 			BU_gama(k)=BU_gama(k)+temp_gama*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j-1,k)+compute_BoundaryCondition(i,j-1,k+1)+compute_BoundaryCondition(i+1,j-1,k);
-			temp_gama=compute_BoundaryCondition(i-1,j,k+1)-4*compute_BoundaryCondition(i,j,k+1)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j,k+1);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j-1,k)+compute_BoundaryCondition(h,i,j-1,k+1)+compute_BoundaryCondition(h,i+1,j-1,k);
+			temp_gama=compute_BoundaryCondition(h,i-1,j,k+1)-4*compute_BoundaryCondition(h,i,j,k+1)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 			BU_gama(k)=BU_gama(k)+temp_gama*para2;
 		else
-			temp=compute_BoundaryCondition(i,j-1,k);
+			temp=compute_BoundaryCondition(h,i,j-1,k);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j-1,k)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j-1,k)+compute_BoundaryCondition(i,j-1,k+1)+compute_BoundaryCondition(i+1,j-1,k);
+			temp=compute_BoundaryCondition(h,i-1,j-1,k)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j-1,k)+compute_BoundaryCondition(h,i,j-1,k+1)+compute_BoundaryCondition(h,i+1,j-1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		end
 	end
 elseif( i>1 && i<M && j==N   )
 	for k=1:K
 		if(k==1)
-			temp=compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j,k-1);
+			temp=compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j,k-1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j,k-1)+compute_BoundaryCondition(i-1,j+1,k)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j,k-1)+compute_BoundaryCondition(i,j+1,k-1)-4*compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j,k-1)+compute_BoundaryCondition(i+1,j+1,k);
+			temp=compute_BoundaryCondition(h,i-1,j,k-1)+compute_BoundaryCondition(h,i-1,j+1,k)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j,k-1)+compute_BoundaryCondition(h,i,j+1,k-1)-4*compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j,k-1)+compute_BoundaryCondition(h,i+1,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		elseif(k==K)
-			temp=compute_BoundaryCondition(i,j+1,k);
-			temp_gama=compute_BoundaryCondition(i,j,k+1);
+			temp=compute_BoundaryCondition(h,i,j+1,k);
+			temp_gama=compute_BoundaryCondition(h,i,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
 			BU_gama(k)=BU_gama(k)+temp_gama*para1;
-			temp=compute_BoundaryCondition(i-1,j+1,k)+compute_BoundaryCondition(i,j+1,k-1)-4*compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j+1,k);
-			temp_gama=compute_BoundaryCondition(i-1,j,k+1)+compute_BoundaryCondition(i,j-1,k+1)-4*compute_BoundaryCondition(i,j,k+1)+compute_BoundaryCondition(i+1,j,k+1);
+			temp=compute_BoundaryCondition(h,i-1,j+1,k)+compute_BoundaryCondition(h,i,j+1,k-1)-4*compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
+			temp_gama=compute_BoundaryCondition(h,i-1,j,k+1)+compute_BoundaryCondition(h,i,j-1,k+1)-4*compute_BoundaryCondition(h,i,j,k+1)+compute_BoundaryCondition(h,i+1,j,k+1);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 			BU_gama(k)=BU_gama(k)+temp_gama*para2;
 		else
-			temp=compute_BoundaryCondition(i,j+1,k);
+			temp=compute_BoundaryCondition(h,i,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j+1,k)+compute_BoundaryCondition(i,j+1,k-1)-4*compute_BoundaryCondition(i,j+1,k)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j+1,k);
+			temp=compute_BoundaryCondition(h,i-1,j+1,k)+compute_BoundaryCondition(h,i,j+1,k-1)-4*compute_BoundaryCondition(h,i,j+1,k)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j+1,k);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		end
 	end
 elseif( i>1 && i<M && j>1 && j<N )
 	for k=1:K
 		if(k==1)
-			temp=compute_BoundaryCondition(i,j,k-1);
+			temp=compute_BoundaryCondition(h,i,j,k-1);
 			BU_normal(k)=BU_normal(k)+temp*para1;
-			temp=compute_BoundaryCondition(i-1,j,k-1)+compute_BoundaryCondition(i,j-1,k-1)-4*compute_BoundaryCondition(i,j,k-1)+compute_BoundaryCondition(i,j+1,k-1)+compute_BoundaryCondition(i+1,j,k-1);
+			temp=compute_BoundaryCondition(h,i-1,j,k-1)+compute_BoundaryCondition(h,i,j-1,k-1)-4*compute_BoundaryCondition(h,i,j,k-1)+compute_BoundaryCondition(h,i,j+1,k-1)+compute_BoundaryCondition(h,i+1,j,k-1);
 			BU_normal(k)=BU_normal(k)+temp*para2;
 		elseif(k==K)
-			temp_gama=compute_BoundaryCondition(i,j,k+1);
+			temp_gama=compute_BoundaryCondition(h,i,j,k+1);
 			BU_gama(k)=BU_gama(k)+temp_gama*para1;
-			temp_gama=compute_BoundaryCondition(i-1,j,k+1)+compute_BoundaryCondition(i,j-1,k+1)-4*compute_BoundaryCondition(i,j,k+1)+compute_BoundaryCondition(i,j+1,k+1)+compute_BoundaryCondition(i+1,j,k+1);
+			temp_gama=compute_BoundaryCondition(h,i-1,j,k+1)+compute_BoundaryCondition(h,i,j-1,k+1)-4*compute_BoundaryCondition(h,i,j,k+1)+compute_BoundaryCondition(h,i,j+1,k+1)+compute_BoundaryCondition(h,i+1,j,k+1);
 			BU_gama(k)=BU_gama(k)+temp_gama*para2;
 		else
 			% do nothing

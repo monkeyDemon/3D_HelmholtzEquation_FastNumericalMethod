@@ -1,17 +1,12 @@
-function [ value ] = compute_BoundaryCondition( i,j,k  )
+function [ value ] = compute_BoundaryCondition( h,i,j,k  )
+% need to modify when equation changed
+
 
 M=15;
-N=15;
-K=15;
 
 Xstart=0;
-Xend=1;
 Ystart=0;
-Yend=1;
 Zstart=0;
-Zend=1;
-
-h=(Xend-Xstart)/(1+M);
 
 x=Xstart+h*i;
 y=Ystart+h*j;

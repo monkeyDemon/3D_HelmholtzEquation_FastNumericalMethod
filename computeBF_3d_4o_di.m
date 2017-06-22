@@ -8,114 +8,114 @@ para1=(1+h*h*K0*K0/12)/(h*h);
 if( i==1 && j==1  )
 	for k=1:K
 		if(k==1)
-			temp=compute_F_ijk(0,j,k)+compute_F_ijk(i,0,k)+compute_F_ijk(i,j,0);
+			temp=compute_F_ijk(h,0,j,k)+compute_F_ijk(h,i,0,k)+compute_F_ijk(h,i,j,0);
 			BF(k)=BF(k)+temp*para1;
 		elseif(k==K)
-			temp=compute_F_ijk(0,j,k)+compute_F_ijk(i,0,k)+compute_F_ijk(i,j,K+1);
+			temp=compute_F_ijk(h,0,j,k)+compute_F_ijk(h,i,0,k)+compute_F_ijk(h,i,j,K+1);
 			BF(k)=BF(k)+temp*para1;
 		else
-			temp=compute_F_ijk(0,j,k)+compute_F_ijk(i,0,k);
+			temp=compute_F_ijk(h,0,j,k)+compute_F_ijk(h,i,0,k);
 			BF(k)=BF(k)+temp*para1;
 		end
 	end
 elseif( i==1 && j==N  )
 	for k=1:K
 		if(k==1)
-			temp=compute_F_ijk(i-1,j,k)+compute_F_ijk(i,j+1,k)+compute_F_ijk(i,j,k-1);
+			temp=compute_F_ijk(h,i-1,j,k)+compute_F_ijk(h,i,j+1,k)+compute_F_ijk(h,i,j,k-1);
 			BF(k)=BF(k)+temp*para1;
 		elseif(k==K)
-			temp=compute_F_ijk(i-1,j,k)+compute_F_ijk(i,j+1,k)+compute_F_ijk(i,j,k+1);
+			temp=compute_F_ijk(h,i-1,j,k)+compute_F_ijk(h,i,j+1,k)+compute_F_ijk(h,i,j,k+1);
 			BF(k)=BF(k)+temp*para1;
 		else
-			temp=compute_F_ijk(i-1,j,k)+compute_F_ijk(i,j+1,k);
+			temp=compute_F_ijk(h,i-1,j,k)+compute_F_ijk(h,i,j+1,k);
 			BF(k)=BF(k)+temp*para1;
 		end
 	end
 elseif( i==1 && j>1 && j<N  )
 	for k=1:K
 		if(k==1)
-			temp=compute_F_ijk(i-1,j,k)+compute_F_ijk(i,j,k-1);
+			temp=compute_F_ijk(h,i-1,j,k)+compute_F_ijk(h,i,j,k-1);
 			BF(k)=BF(k)+temp*para1;
 		elseif(k==K)
-			temp=compute_F_ijk(i-1,j,k)+compute_F_ijk(i,j,k+1);
+			temp=compute_F_ijk(h,i-1,j,k)+compute_F_ijk(h,i,j,k+1);
 			BF(k)=BF(k)+temp*para1;
 		else
-			temp=compute_F_ijk(i-1,j,k);
+			temp=compute_F_ijk(h,i-1,j,k);
 			BF(k)=BF(k)+temp*para1;
 		end
 	end
 elseif( i==M && j==1 )
 	for k=1:K
 		if(k==1)
-			temp=compute_F_ijk(i+1,j,k)+compute_F_ijk(i,j-1,k)+compute_F_ijk(i,j,k-1);
+			temp=compute_F_ijk(h,i+1,j,k)+compute_F_ijk(h,i,j-1,k)+compute_F_ijk(h,i,j,k-1);
 			BF(k)=BF(k)+temp*para1;
 		elseif(k==K)
-			temp=compute_F_ijk(i+1,j,k)+compute_F_ijk(i,j-1,k)+compute_F_ijk(i,j,k+1);
+			temp=compute_F_ijk(h,i+1,j,k)+compute_F_ijk(h,i,j-1,k)+compute_F_ijk(h,i,j,k+1);
 			BF(k)=BF(k)+temp*para1;
 		else
-			temp=compute_F_ijk(i+1,j,k)+compute_F_ijk(i,j-1,k);
+			temp=compute_F_ijk(h,i+1,j,k)+compute_F_ijk(h,i,j-1,k);
 			BF(k)=BF(k)+temp*para1;
 		end
 	end
 elseif( i==M && j==N )
 	for k=1:K
 		if(k==1)
-			temp=compute_F_ijk(i+1,j,k)+compute_F_ijk(i,j+1,k)+compute_F_ijk(i,j,k-1);
+			temp=compute_F_ijk(h,i+1,j,k)+compute_F_ijk(h,i,j+1,k)+compute_F_ijk(h,i,j,k-1);
 			BF(k)=BF(k)+temp*para1;
 		elseif(k==K)
-			temp=compute_F_ijk(i+1,j,k)+compute_F_ijk(i,j+1,k)+compute_F_ijk(i,j,k+1);
+			temp=compute_F_ijk(h,i+1,j,k)+compute_F_ijk(h,i,j+1,k)+compute_F_ijk(h,i,j,k+1);
 			BF(k)=BF(k)+temp*para1;
 		else
-			temp=compute_F_ijk(i+1,j,k)+compute_F_ijk(i,j+1,k);
+			temp=compute_F_ijk(h,i+1,j,k)+compute_F_ijk(h,i,j+1,k);
 			BF(k)=BF(k)+temp*para1;
 		end
 	end
 elseif( i==M && j>1 && j<N  )
 	for k=1:K
 		if(k==1)
-			temp=compute_F_ijk(i+1,j,k)+compute_F_ijk(i,j,k-1);
+			temp=compute_F_ijk(h,i+1,j,k)+compute_F_ijk(h,i,j,k-1);
 			BF(k)=BF(k)+temp*para1;
 		elseif(k==K)
-			temp=compute_F_ijk(i+1,j,k)+compute_F_ijk(i,j,k+1);
+			temp=compute_F_ijk(h,i+1,j,k)+compute_F_ijk(h,i,j,k+1);
 			BF(k)=BF(k)+temp*para1;
 		else
-			temp=compute_F_ijk(i+1,j,k);
+			temp=compute_F_ijk(h,i+1,j,k);
 			BF(k)=BF(k)+temp*para1;
 		end
 	end
 elseif( i>1 && i<M && j==1  )
 	for k=1:K
 		if(k==1)
-			temp=compute_F_ijk(i,j-1,k)+compute_F_ijk(i,j,k-1);
+			temp=compute_F_ijk(h,i,j-1,k)+compute_F_ijk(h,i,j,k-1);
 			BF(k)=BF(k)+temp*para1;
 		elseif(k==K)
-			temp=compute_F_ijk(i,j-1,k)+compute_F_ijk(i,j,k+1);
+			temp=compute_F_ijk(h,i,j-1,k)+compute_F_ijk(h,i,j,k+1);
 			BF(k)=BF(k)+temp*para1;
 		else
-			temp=compute_F_ijk(i,j-1,k);
+			temp=compute_F_ijk(h,i,j-1,k);
 			BF(k)=BF(k)+temp*para1;
 		end
 	end
 elseif( i>1 && i<M && j==N   )
 	for k=1:K
 		if(k==1)
-			temp=compute_F_ijk(i,j+1,k)+compute_F_ijk(i,j,k-1);
+			temp=compute_F_ijk(h,i,j+1,k)+compute_F_ijk(h,i,j,k-1);
 			BF(k)=BF(k)+temp*para1;
 		elseif(k==K)
-			temp=compute_F_ijk(i,j+1,k)+compute_F_ijk(i,j,k+1);
+			temp=compute_F_ijk(h,i,j+1,k)+compute_F_ijk(h,i,j,k+1);
 			BF(k)=BF(k)+temp*para1;
 		else
-			temp=compute_F_ijk(i,j+1,k);
+			temp=compute_F_ijk(h,i,j+1,k);
 			BF(k)=BF(k)+temp*para1;
 		end
 	end
 elseif( i>1 && i<M && j>1 && j<N )
 	for k=1:K
 		if(k==1)
-			temp=compute_F_ijk(i,j,k-1);
+			temp=compute_F_ijk(h,i,j,k-1);
 			BF(k)=BF(k)+temp*para1;
 		elseif(k==K)
-			temp=compute_F_ijk(i,j,k+1);
+			temp=compute_F_ijk(h,i,j,k+1);
 			BF(k)=BF(k)+temp*para1;
 		else
 			% do nothing
