@@ -23,9 +23,9 @@ epr=0;
 K0=k0^2*epr;
 
 %-----------------need to change on different numerical examples-------------------
-M=15;
-N=15;
-K=15;
+M=63;
+N=63;
+K=63;
 
 Xstart=0;
 Xend=1;
@@ -56,6 +56,8 @@ end
 figure
 mesh(Xstart+hx:hx:Xend-hx,Ystart+hy:hy:Yend-hy,real_U_gama);
 
+%--------------------------start the timer-----------------------------------
+tic
 
 Lambda=2*(M+1)*sin((1:M)*pi/(2*(M+1)));
 Lambda=-Lambda.*Lambda;
@@ -140,6 +142,15 @@ for i=1:M
 end
 
 Cavity_interface_mag=abs(Cavity_interface);
+
+% compute error
+ErrorM=Cavity_interface_mag-real_U_gama;
+tempE=sum(sum(abs(ErrorM)));
+tempE=tempE*(Xend-Xstart)*(Yend-Ystart)/(M*N);
+e2=sqrt(tempE)
+
+toc
+%--------------------------end the timer-----------------------------------
 
 figure
 mesh(Xstart+hx:hx:Xend-hx,Ystart+hy:hy:Yend-hy,Cavity_interface_mag);
