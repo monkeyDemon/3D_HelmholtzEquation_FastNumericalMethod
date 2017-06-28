@@ -23,9 +23,9 @@ epr=0;
 K0=k0^2*epr;
 
 %-----------------need to change on different numerical examples-------------------
-M=31;
-N=31;
-K=31;
+M=15;
+N=15;
+K=15;
 
 Xstart=0;
 Xend=1;
@@ -55,6 +55,19 @@ for i=1:M
 end
 figure
 mesh(Xstart+hx:hx:Xend-hx,Ystart+hy:hy:Yend-hy,real_U_gama);
+
+% all value of U
+real_U=zeros(M*N*K,1);
+for i=1:M
+	for j=1:N
+		for k=1:K
+		x=h*i;
+		y=h*j;
+		z=h*k;
+		real_U((i-1)*N*K+(j-1)*K+k)=(sin(pi*y)*sin(pi*z)/sinh(sqrt(2)*pi))*(2*sinh(sqrt(2)*pi*x)+sinh(sqrt(2)*pi*(1-x)));	
+		end
+	end
+end
 
 %--------------------------start the timer-----------------------------------
 tic
@@ -130,6 +143,7 @@ clear BF;
 % storage cavity interface
 U_ba=zeros(M*N*K,1);
 U=zeros(M*N*K,1);
+real_U_ba=SMNK*real_U;
 for i=1:M
 	i
 	for j=1:N
@@ -172,7 +186,7 @@ end
 
 U=SMNK*U_ba;
 clear SMNK;
-clear U_ba;
+%clear U_ba;
 
 Cavity_interface=zeros(M,N);
 % get the cavity interface
@@ -189,6 +203,13 @@ Cavity_interface_mag=abs(Cavity_interface);
 ErrorM=Cavity_interface_mag-real_U_gama;
 tempE=sum(sum(abs(ErrorM)));
 tempE=tempE*(Xend-Xstart)*(Yend-Ystart)/(M*N);
+e2=sqrt(tempE)
+
+% compute U_ba error
+ErrorM=real_U_ba-U_ba;
+ErrorM(1:10)
+tempE=sum(abs(ErrorM));
+tempE=tempE*(Xend-Xstart)*(Yend-Ystart)*(Zend-Zstart)/(M*N*K);
 e2=sqrt(tempE)
 
 toc
