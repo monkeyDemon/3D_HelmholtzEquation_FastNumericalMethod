@@ -68,15 +68,20 @@ h=hx;
 real_U=zeros(M*N*K,1);
 for i=1:M
 	for j=1:N
-	    for k=1:K
-		x=h*i;
-		y=h*j;
-		z=h*k;
-		real_U((i-1)*N*K+(j-1)*K+k)=(sin(pi*y)*sin(pi*z)/sinh(sqrt(2)*pi))*(2*sinh(sqrt(2)*pi*x)+sinh(sqrt(2)*pi*(1-x)));	
-            end
+	    x=h*i;
+	    y=h*j;
+	    z=[h:h:h*K]';
+	    real_U((i-1)*N*K+(j-1)*K+1:(i-1)*N*K+(j-1)*K+K)=(sin(pi*y)*sin(pi*z)/sinh(sqrt(2)*pi))*(2*sinh(sqrt(2)*pi*x)+sinh(sqrt(2)*pi*(1-x)));
+	    %for k=1:K
+	    %    x=h*i;
+	    %    y=h*j;
+	    %    z=h*k;
+	    %    z=	
+	    %    real_U((i-1)*N*K+(j-1)*K+k)=(sin(pi*y)*sin(pi*z)/sinh(sqrt(2)*pi))*(2*sinh(sqrt(2)*pi*x)+sinh(sqrt(2)*pi*(1-x)));	
+            %end
 	end
 end
-
+disp('real U compute success\n');
 
 tic
 
@@ -102,6 +107,7 @@ for bi=1:M
 	B((bi-1)*N*K+(bj-1)*K+1 : (bi-1)*N*K+(bj-1)*K+K)=computeBU_3d_4o_di(bi,bj,M,N,K,h,K0);
     end
 end
+disp('B compute success\n');
 
 % compute F_ij_ba
 F=zeros(M*N*K,1);
@@ -110,6 +116,7 @@ for bi=1:M
         F((bi-1)*N*K+(bj-1)*K+1 : (bi-1)*N*K+(bj-1)*K+K)=compute_F_col(bi,bj,M,N,K,h);
     end
 end
+disp('F compute success\n');
 
 % compute BF_ij_ba
 BF=zeros(M*N*K,1);
@@ -118,6 +125,7 @@ for bi=1:M
         BF((bi-1)*N*K+(bj-1)*K+1 : (bi-1)*N*K+(bj-1)*K+K)=computeBF_3d_4o_di(bi,bj,M,N,K,h,K0);
     end
 end
+disp('BF compute success\n');
 
 % compute B_ba F_ba BF_ba
 SMNK_row=zeros(1,M*N*K);% temperare storage one row of the matrix SMNK
@@ -144,6 +152,7 @@ for bi=1:M
             F_ba((bi-1)*N*K+(bj-1)*K+bk)=SMNK_row*F;
             BF_ba((bi-1)*N*K+(bj-1)*K+bk)=SMNK_row*BF;
             real_U_ba((bi-1)*N*K+(bj-1)*K+bk)=SMNK_row*real_U;
+	    bk
         end
     end
 end
