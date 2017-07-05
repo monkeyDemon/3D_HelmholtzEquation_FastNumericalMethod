@@ -2,7 +2,7 @@ function [ value ] = compute_BoundaryCondition( h,i,j,k  )
 % need to modify when equation changed
 
 
-M=7;
+M=127;
 
 Xstart=0;
 Ystart=0;

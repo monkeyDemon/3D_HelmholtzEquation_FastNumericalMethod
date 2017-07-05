@@ -31,9 +31,9 @@ epr=0;
 K0=k0^2*epr;
 
 %-----------------need to change on different numerical examples-------------------
-M=7;
-N=7;
-K=7;
+M=127;
+N=127;
+K=127;
 
 Xstart=0;
 Xend=1;
@@ -77,6 +77,8 @@ for i=1:M
 	end
 end
 
+
+tic
 
 Lambda=2*(M+1)*sin((1:M)*pi/(2*(M+1)));
 Lambda=-Lambda.*Lambda;
@@ -145,7 +147,7 @@ for bi=1:M
         end
     end
 end
-clear B,F,BF,real_U;
+clear B F BF real_U;
 
 
 %######################################### start solving#########################################
@@ -192,12 +194,13 @@ end
 
 
 % compute error
-ErrorM=real_U-U_ba
+ErrorM=real_U_ba-U_ba;
+maxV=max(ErrorM)
 tempE=sum(ErrorM.*ErrorM);
 tempE=tempE*(Xend-Xstart)*(Yend-Ystart)*(Zend-Zstart)/(M*N*K);
 e2=sqrt(tempE)
 
-
+toc
 %--------------------------visualizing the result of U-----------------------------------
 
 
