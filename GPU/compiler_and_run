@@ -1,0 +1,12 @@
+
+system('nvcc -c AddVectors.cu --compiler-options -fPIC')
+
+mex AddVectorsCuda.cpp AddVectors.o -lcudart -L"/usr/local/cuda-8.0/lib64"
+
+A=single([1:0.01:100]);
+B=single([100:-0.01:1]);
+
+tic
+C=AddVectorsCuda(A,B);
+C(1:10)
+toc
