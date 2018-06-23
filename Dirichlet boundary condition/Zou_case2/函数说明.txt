@@ -1,0 +1,23 @@
+3Dimension4阶的带有Dirichelet边界条件的Helmholtz方程的快速求解算法
+
+两个版本
+
+threeD4Order_dirichlet 普通版本
+不考虑内存问题，空间复杂度为O(M^3)
+速度更快
+
+finegrid代表精细网格版本，只求解空间中某一平面上的解
+这个版本可能用于一些特殊物理背景的应用中，当只关心某一平面上的解时使用
+这个版本同时具备快速和低内存消耗的优点，但应用面较小。
+使用更节省内存的实现，因此能求解更加精细的网格
+整个过程空间复杂度为O(M^2),求解速度稍慢
+
+
+threeD4Order_dirichlet_finegrid_common
+finegrid精细网格版本的最一般版本，各个维度网格大小可以不同
+
+
+threeD4Order_dirichlet_finegrid
+finegrid精细网格版本的修改版，不失一般性的令各个维度网格大小相同，可以小幅提升算法速率
+
+
