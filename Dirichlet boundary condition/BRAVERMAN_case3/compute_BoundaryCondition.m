@@ -2,12 +2,6 @@ function [ value,state ] = compute_BoundaryCondition( logo, para )
 % 计算dirichelet边界条件
 % need to modify when equation changed
 
-% global M;
-% global h;
-% global Xstart Xend;
-% global Ystart Yend;
-% global Zstart Zend;
-
 M = para(1);
 h = para(2);
 Xstart = para(3);
@@ -16,6 +10,7 @@ Ystart = para(5);
 Yend = para(6);
 Zstart = para(7);
 Zend = para(8);
+K0 = para(9);
 
 
 vector_x = [Xstart+h : h : Xend-h]';
@@ -25,27 +20,47 @@ vector_z = [Zstart+h : h : Zend-h]';
 
 value = 0;
 if(strcmp(logo,'BP_top'))
-    state = 0;
+    value = zeros(M*M,1);
+    const = sinh(sqrt(5))/sinh(sqrt(5)*pi);
+    tempY=cos(sqrt(K0*K0+1)*vector_y);
+    for xindex=1:M
+       value((xindex-1)*M+1:xindex*M) = cos(2*vector_x(xindex))*tempY*const; 
+    end
+    state = 1;
 elseif(strcmp(logo,'BP_bottom'))
     state = 0;
 elseif(strcmp(logo,'BP_left'))
     value = zeros(M*M,1);
-    tempZ=sin(pi*vector_z);
+    const = 1.0/sinh(sqrt(5)*pi);
+    tempZ= sinh(sqrt(5)*vector_z);
     for yindex=1:M
-       value((yindex-1)*M+1:yindex*M) = sin(pi*vector_y(yindex))*tempZ; 
+       value((yindex-1)*M+1:yindex*M) = cos(sqrt(K0*K0+1)*vector_y(yindex)) * tempZ * const; 
     end
     state = 1;
 elseif(strcmp(logo,'BP_right'))
     value = zeros(M*M,1);
-    tempZ=sin(pi*vector_z);
+    const = cos(2)/sinh(sqrt(5)*pi);
+    tempZ= sinh(sqrt(5)*vector_z);
     for yindex=1:M
-       value((yindex-1)*M+1:yindex*M) = 2*sin(pi*vector_y(yindex))*tempZ; 
+       value((yindex-1)*M+1:yindex*M) = cos(sqrt(K0*K0+1)*vector_y(yindex)) * tempZ * const; 
     end
     state = 1;
 elseif(strcmp(logo,'BP_front'))
-    state = 0;
+    value = zeros(M*M,1);
+    const = 1.0/sinh(sqrt(5)*pi);
+    tempZ= sinh(sqrt(5)*vector_z);
+    for xindex=1:M
+       value((xindex-1)*M+1:xindex*M) = cos(2*vector_x(xindex)) * tempZ * const; 
+    end
+    state = 1;
 elseif(strcmp(logo,'BP_back'))
-    state = 0;
+    value = zeros(M*M,1);
+    const = cos(sqrt(K0*K0+1)) / sinh(sqrt(5)*pi);
+    tempZ= sinh(sqrt(5)*vector_z);
+    for xindex=1:M
+       value((xindex-1)*M+1:xindex*M) = cos(2*vector_x(xindex)) * tempZ * const; 
+    end
+    state = 1;
 elseif(strcmp(logo,'BE_t1'))
     state = 0;
 elseif(strcmp(logo,'BE_t2'))

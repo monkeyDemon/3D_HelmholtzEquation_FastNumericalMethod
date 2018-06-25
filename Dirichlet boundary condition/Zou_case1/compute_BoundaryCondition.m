@@ -33,27 +33,27 @@ elseif(strcmp(logo,'BP_back'))
     state = 0;
 elseif(strcmp(logo,'BE_t1'))
     state = 0;
-elseif(strcmp(logo,'BE_t1'))
+elseif(strcmp(logo,'BE_t2'))
     state = 0;
-elseif(strcmp(logo,'BE_t1'))
+elseif(strcmp(logo,'BE_t3'))
     state = 0;
-elseif(strcmp(logo,'BE_t1'))
-    state = 0;
-elseif(strcmp(logo,'BE_b1'))
+elseif(strcmp(logo,'BE_t4'))
     state = 0;
 elseif(strcmp(logo,'BE_b1'))
     state = 0;
-elseif(strcmp(logo,'BE_b1'))
+elseif(strcmp(logo,'BE_b2'))
     state = 0;
-elseif(strcmp(logo,'BE_b1'))
+elseif(strcmp(logo,'BE_b3'))
     state = 0;
-elseif(strcmp(logo,'BE_l1'))
-    state = 0;
-elseif(strcmp(logo,'BE_l1'))
+elseif(strcmp(logo,'BE_b4'))
     state = 0;
 elseif(strcmp(logo,'BE_l1'))
     state = 0;
-elseif(strcmp(logo,'BE_l1'))
+elseif(strcmp(logo,'BE_l2'))
+    state = 0;
+elseif(strcmp(logo,'BE_l3'))
+    state = 0;
+elseif(strcmp(logo,'BE_l4'))
     state = 0;
 else
     state = 0;
