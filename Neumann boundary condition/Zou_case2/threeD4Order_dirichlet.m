@@ -1,13 +1,10 @@
 % author: AnSheng
-% this code can sovle the 3 dimentional Helmholtz function with dirichlet boundary condition
+% this code can sovle the 3 dimentional Helmholtz function with neumann boundary condition
 % use a 4 order fast numerical method
 
-% this demo is the save memory version
-% the spatial complexity is O(M^2)
 
 % if you want to run our code on your numerical examples
 % these functions need to be modified:
-% threeD4Order_dirichlet_finegrid.m 
 % compute_BoundaryCondition.m            the function to compute boundary value of u
 % compute_SourceFunctionBoundary.m       the function to compute boundary value of source function f 
 % compute_SourceFunction.m               the function to compute f(accurately saying is calculate f(x,:,z))
@@ -17,11 +14,10 @@
 % Xstart,Ystart,Zstart 
 % Xend,Yend,Zend
 % hasSourceFunction
-% extractZ
 
 
 % -----------------------------------------------------------------------------------------
-% here the save memory version code is below:
+% here the normal version code is below:
 % -----------------------------------------------------------------------------------------
 clc,clear
 close all
@@ -30,7 +26,7 @@ warning off; %忽略解方程时的精度警告
 
 
 
-%-----------------need to change on different numerical examples-------------------
+%% --------need to change on different numerical examples----------
 k0=pi;
 epr=0;
 K0=k0^2*epr;
@@ -44,22 +40,18 @@ Yend=1;
 Zstart=0;
 Zend=1;
 
-hasSourceFunction = 1;  % 标识是否存在源函数，即f是否为0
-extractZ=(M+1)/2;% set which layer we extract ,then we can compare with the true value of u
-
-%-----------------need to change on different numerical examples-------------------
+hasSourceFunction = 0;  % 标识是否存在源函数，即f是否为0
+%-----------need to change on different numerical examples----------------
 
 
+%% ---------------算法所需中间变量的准备------------------------
 % in order to simplified the derivation process, in our code we also have hx=hy=hz
 hx=(Xend-Xstart)/(M+1);
 hy=(Yend-Ystart)/(M+1);
 hz=(Zend-Zstart)/(M+1);
 h=hx; 
 
-
     
-tic
-
 Lambda=2*(M+1)*sin((1:M)*pi/(2*(M+1)))/(Xend-Xstart);
 Lambda=-Lambda.*Lambda;
 
@@ -86,11 +78,10 @@ IK = sparse(1 : M, 1 : M, 1);
 
 
 
-%--------------------------start the timer-----------------------------------
+%% ------利用dirichlet边界条件计算出各种边界面/边处的值---------
 
 % 利用dirichlet边界条件计算出各种边界面/边处的值
-para = [M, h, Xstart, Xend, Ystart, Yend, Zstart, Zend, K0];
-[U_top,U_top_state] = compute_BoundaryCondition( 'BP_top',para );             % compute U::K+1
+para = [M, h, Xstart, Xend, Ystart, Yend, Zstart, Zend];
 [U_bottom,U_bottom_state] = compute_BoundaryCondition( 'BP_bottom',para );    % compute U::0
 [U_left,U_left_state] = compute_BoundaryCondition( 'BP_left',para );          % compute U0::
 [U_right,U_right_state] = compute_BoundaryCondition( 'BP_right',para );       % compute UM+1::
@@ -119,25 +110,6 @@ para = [M, h, Xstart, Xend, Ystart, Yend, Zstart, Zend, K0];
 
 
 
-% U_top_bar = （SM×SN）U::K+1 
-U_top_bar = zeros(M*M,1);
-if(U_top_state==1) %另一种写法，更快
-    for j = 1:M
-        SNU = SM * U_top((j-1)*M+1:(j-1)*M+M);
-        for i = 1:M
-            U_top_bar((i-1)*M+1:(i-1)*M+M) = U_top_bar((i-1)*M+1:(i-1)*M+M) + SM(i,j) * SNU;
-        end
-    end
-end
-% if(U_top_state==1)
-%     for i=1:M
-%         temp=zeros(N,1);
-%         for j=1:M
-%             temp= temp + SN*U_top((j-1)*M+1:(j-1)*M+N)*SM(i,j);   
-%         end
-%         U_top_bar((i-1)*M+1:(i-1)*M+N) = temp;
-%     end
-% end
 U_bottom_bar = zeros(M*M,1);
 if(U_bottom_state==1) %另一种写法，更快
     for j = 1:M
@@ -346,13 +318,101 @@ if(F_back_state==1)
 end
 
 
+%% ------------------------compute F_ba----------------------------
+% tic
+% if hasSourceFunction==1
+%     F = zeros(M*M*M,1);
+%     for kk = 1:M
+%         for ii =1:M
+%             x=Xstart + h*ii;
+%             z=Zstart + h*kk;
+%             F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M) = compute_SourceFunction(x,z,para);
+%         end
+%     end
+% 
+%     F_ba = zeros(M*M*M,1);
+%     for kk=1:M
+%         for i =1:M
+%             for j = 1:M
+%                 tempkk = 0;
+%                 tempSNj = SM(j,:);
+%                 for ii =1:M
+%                     x=Xstart + h*ii;
+%                     z=Zstart + h*kk;
+%                     tempkk = tempkk + SM(i,ii) * tempSNj * F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
+%                 end
+%                 F_ba((i-1)*M*M+(j-1)*M+kk) = tempkk;
+%             end
+%         end
+%     end
+% end
+% toc
+% clear F % 该变量已无作用，占用大量内存，清理
 
+
+
+%% --------------------并行compute F_ba----------------------------
+if hasSourceFunction==1
+    delete(gcp('nocreate')); %delete the current pool 
+    parpool
+    disp('计算F_bar')
+    tic
+    F = zeros(M*M,M);
+    parfor kk = 1:M
+        tF = zeros(M*M*M,1);
+        tempF = zeros(M*M,1);
+        for ii =1:M
+            x=Xstart + h*ii;
+            z=Zstart + h*kk;
+            tempF((ii-1)*M+1:ii*M) = compute_SourceFunction(x,z,para);
+%             F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M) = compute_SourceFunction(x,z,para);
+        end
+        F(:,kk)=tempF;
+    end
+    
+    F_ba_ = zeros(M*M,M);
+    parfor kk=1:M
+        tempF = F(:,kk);
+        tempF_bar = ones(M*M,1);
+        for i =1:M
+            for j = 1:M
+                tempkk = 0;
+                tempSNj = SM(j,:);
+                for ii =1:M
+                    x=Xstart + h*ii;
+                    z=Zstart + h*kk;
+%                     tempkk = tempkk + SM(i,ii) * tempSNj * F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
+                    tempkk = tempkk + SM(i,ii) * tempSNj * tempF((ii-1)*M+1:ii*M);
+                end
+%                 indexx = (i-1)*M*M+(j-1)*M+kk;
+%                 F_ba(indexx) = tempkk;
+                tempF_bar((i-1)*M+j) = tempkk;
+            end
+        end
+        F_ba_(:,kk)=tempF_bar;
+    end
+    toc
+    clear F % 该变量已无作用，占用大量内存，清理
+    
+    F_ba = zeros(M*M*M,1);
+    for k =1:M
+       F_ba(k:M:(M-1)*M*M+(M-1)*M+k)=F_ba_(:,k); 
+    end
+    clear F_ba_ % 该变量已无作用，占用大量内存，清理
+end
+
+
+
+
+%% ------------------求解方程（计算U_bar)--------------------------
+disp('求解方程（计算U_bar)')
+tic
 p1 = 1+h*h*K0*K0/12;
 p2 = h*h/6;
 p4 = K0*K0;
 
 % storage cavity interface
-U_gamma_bar = zeros(M*M,1);
+U_bar = zeros(M*M*M,1);
 for i=1:M
 	
 	for j=1:M
@@ -365,27 +425,11 @@ for i=1:M
          Fij_ba = zeros(M,1);
          if hasSourceFunction==1
              Qij = temp * h*h/12 + IK;
-             for kk = 1:M
-                 tempkk = 0;
-                 tempSNj = SM(j,:);
-                 for ii =1:M
-                     x=Xstart + h*ii;
-                     z=Zstart + h*kk;
-                     tempkk = tempkk + SM(i,ii) * tempSNj * compute_SourceFunction(x,z,para);
-                 end
-                 Fij_ba(kk) = tempkk;
-             end
-             Fij_ba = Qij * Fij_ba;
+             Fij_ba = Qij * F_ba((i-1)*M*M+(j-1)*M+1:(i-1)*M*M+(j-1)*M+M);
          end
          
         %% compute BUij_bar---------------------------------------------------
          BU_bar = zeros(M,1);
-        
-         if(U_top_state==1)
-            BP_top_bar = zeros(M,1);
-            BP_top_bar(M) = ((Lambda(i)+Miu(j))*p2 + p1)*U_top_bar((i-1)*M+j);
-            BU_bar = BU_bar + BP_top_bar;
-         end
          if(U_bottom_state==1)
             BP_bottom_bar = zeros(M,1);
             BP_bottom_bar(1) = ((Lambda(i)+Miu(j))*p2 + p1)*U_bottom_bar((i-1)*M+j);
@@ -411,7 +455,6 @@ for i=1:M
             BP_back_bar = BP_back_bar + p2 * SM(j,M) * AK * U_back_bar((i-1)*M+1:(i*M));
             BU_bar = BU_bar + BP_back_bar;
          end
-        
         
          if(U_t1_state==1)
              BE_t1_bar = zeros(M,1);
@@ -503,70 +546,121 @@ for i=1:M
 		%% compute F^
 		 right_term =Fij_ba +BF_bar -BU_bar/(h*h);
 
-		 % solve the linear equation set : get the value of Uij:_ba
-		 % compute Uij:_ba
-         % BarV storage the value of Uij:_ba
-		 [BarV,flag,relres,iter]=bicgstab(Hij,right_term,1e-14,1800);
-		
-         U_gamma_bar((i-1)*M+j) = BarV(extractZ);
+        %% LU decomposition
+         [L, U] = lu(Hij);
+
+         % parameter matrix of U_::K+1
+         Htop = ( p2*(Lambda(i)+Miu(j)) + p1 ) * ( L \ aN2 );
+         
+         R = L \ right_term;
+         
+         alpha_ij = U(M,M);
+         beta_ij = Htop(M);
+         rij = R(M);
+         
+         
+         
+         
+		 % [BarV,flag,relres,iter]=bicgstab(Hij,right_term,1e-14,1800);
+         
 	end
 end
 toc
+clear F_ba  % 该变量已无作用，占用大量内存，清理
+
+
+%% compute U
+% disp('计算最终数值解U（利用U_bar）')
+% tic
+% U = zeros(M*M*M,1);
+% for i=1:M
+%     for j =1:M
+%         for kk = 1:M
+%             tempkk = 0;
+%             tempSNj = SM(j,:);
+%             for ii =1:M
+%                 x=Xstart + h*ii;
+%                 z=Zstart + h*kk;
+%                 tempkk = tempkk + SM(i,ii) * tempSNj * U_bar((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
+%             end
+%             U((i-1)*M*M+(j-1)*M+kk) = tempkk;
+%         end
+%     end
+% end
+% toc
+
+
+%% compute U （使用并行）
+delete(gcp('nocreate')); %delete the current pool 
+parpool
+disp('计算最终数值解U（利用U_bar）')
+tic
+UU = zeros(M*M,M);
+parfor i=1:M
+    Ujk = zeros(M*M,1);
+    tempSM = SM;
+    Ubar_temp = U_bar;
+    for j =1:M
+        for kk = 1:M
+            tempkk = 0;
+            tempSNj = tempSM(j,:);
+            for ii =1:M
+                x=Xstart + h*ii;
+                z=Zstart + h*kk;
+                tempkk = tempkk + tempSM(i,ii) * tempSNj * Ubar_temp((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
+            end
+            Ujk((j-1)*M+kk) = tempkk;
+        end
+    end
+    UU(:,i) = Ujk;
+end
+toc
+U = zeros(M*M*M,1);
+for i=1:M
+    U((i-1)*M*M+1:i*M*M) = UU(:,i);
+end
 
 %--------------------------end the timer-----------------------------------
 
-tic
-% U = SMN * U_bar
-U = zeros(M*M,1);
-for i=1:M,
-    for j=1:M
-        temp =0;
-        for k=1:M
-            U((i-1)*M+j)= U((i-1)*M+j)+(SM(i,k)*SM(j,:)) * U_gamma_bar((k-1)*M+1:k*M);
+
+
+% ---------------------------计算内存消耗-----------------------------------
+memoryList = whos;
+totalMemory = 0;
+for i = 1:length(memoryList)
+   totalMemory = totalMemory +  memoryList(i).bytes;
+end
+totalMemory = totalMemory/1024/1024;
+disp('Matlab used memory(MB) :')
+disp(totalMemory);
+
+
+
+% ---------------------------可视化-----------------------------------
+disp('正在绘制数值解...')
+plot3Dsolution( para,U);
+
+
+% compute the real value of U
+real_U=zeros(M*M*M,1);
+for i=1:M
+	for j=1:M
+        for k =1:M
+            x=Xstart + h*i;
+            y=Ystart + h*j;
+            z=Zstart + h*k;
+            real_U((i-1)*M*M+(j-1)*M+k)=compute_realU( x,y,z );	
         end
-    end
-    
-end
-toc
-
-
-Cavity_interface=zeros(M,M);
-% get the cavity interface
-for i=1:M
-	for j=1:M
-		Cavity_interface(i,j)=U((i-1)*M+j);
 	end
 end
 
-% draw the real value of U
-real_U_gama=zeros(M,M);
-for i=1:M
-	for j=1:M
-		x=h*i;
-		y=h*j;
-		z=h*extractZ;
-		real_U_gama(i,j)=compute_realU( x,y,z );	
-	end
-end
-figure
-mesh(Xstart+hx:hx:Xend-hx,Ystart+hy:hy:Yend-hy,real_U_gama);
 
-
-% compute error
-ErrorM_abs=abs(Cavity_interface-real_U_gama);
-tempE=sum(sum(ErrorM_abs.*ErrorM_abs));
-tempE=tempE*(Xend-Xstart)*(Yend-Ystart)/(M*M);
-e2=sqrt(tempE)
 
 % % compute U_ba error
-% ErrorM=real_U_ba-U_ba;
-% ErrorM(1:10)
-% tempE=sum(abs(ErrorM));
-% tempE=tempE*(Xend-Xstart)*(Yend-Ystart)*(Zend-Zstart)/(M*N*K);
-% e2=sqrt(tempE)
+ErrorM=real_U-U;
+tempE=sum(abs(ErrorM).*abs(ErrorM));
+tempE=tempE*(Xend-Xstart)*(Yend-Ystart)*(Zend-Zstart)/(M^3);
+e2=sqrt(tempE)
 
 
 
-
-figure
-mesh(Xstart+hx:hx:Xend-hx,Ystart+hy:hy:Yend-hy,Cavity_interface);

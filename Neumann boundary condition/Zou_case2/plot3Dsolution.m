@@ -18,6 +18,8 @@ vector_z = [Zstart+h : h : Zend-h]';
 %% 开始绘图
 figure
 % 选择色带
+colormap(jet(64))
+% colormap(hsv);  
 % colormap(hsv); 
 % colormap(jet); 
 % colormap(hot); 
@@ -26,7 +28,6 @@ figure
 % colormap(summer); 
 % colormap(autumn); 
 % colormap(winter); 
-colormap(jet(32))
 halfSize = floor((M+1)/2);
 
 
@@ -48,7 +49,7 @@ for i =1:M
 end
 surf(X,Y,Z,R);
 shading interp;  
-colorbar
+colorbar;
 hold on 
 
 %% 绘制左面的面
