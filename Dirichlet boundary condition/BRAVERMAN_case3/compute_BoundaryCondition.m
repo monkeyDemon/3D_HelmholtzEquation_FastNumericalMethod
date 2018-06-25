@@ -62,13 +62,25 @@ elseif(strcmp(logo,'BP_back'))
     end
     state = 1;
 elseif(strcmp(logo,'BE_t1'))
-    state = 0;
+    tempY = cos(sqrt(K0*K0+1)*0);
+    tempZ = sinh(sqrt(5)*1) / sinh(sqrt(5)*pi);
+    value = cos(2*vector_x)*tempY*tempZ;
+    state = 1;
 elseif(strcmp(logo,'BE_t2'))
-    state = 0;
+    tempX = cos(2*1);
+    tempZ = sinh(sqrt(5)*1) / sinh(sqrt(5)*pi);
+    value = cos(sqrt(K0*K0+1)*vector_y)*tempX*tempZ;
+    state = 1;
 elseif(strcmp(logo,'BE_t3'))
-    state = 0;
+    tempY = cos(sqrt(K0*K0+1)*1);
+    tempZ = sinh(sqrt(5)*1) / sinh(sqrt(5)*pi);
+    value = cos(2*vector_x)*tempY*tempZ;
+    state = 1;
 elseif(strcmp(logo,'BE_t4'))
-    state = 0;
+    tempX = cos(2*0);
+    tempZ = sinh(sqrt(5)*1) / sinh(sqrt(5)*pi);
+    value = cos(sqrt(K0*K0+1)*vector_y)*tempX*tempZ;
+    state = 1;
 elseif(strcmp(logo,'BE_b1'))
     state = 0;
 elseif(strcmp(logo,'BE_b2'))
@@ -78,13 +90,25 @@ elseif(strcmp(logo,'BE_b3'))
 elseif(strcmp(logo,'BE_b4'))
     state = 0;
 elseif(strcmp(logo,'BE_l1'))
-    state = 0;
+    tempX = cos(2*0);
+    tempY = cos(sqrt(K0*K0+1)*0);
+    value = tempX * tempY * sinh(sqrt(5)*vector_z) / sinh(sqrt(5)*pi);
+    state = 1;
 elseif(strcmp(logo,'BE_l2'))
-    state = 0;
+    tempX = cos(2*1);
+    tempY = cos(sqrt(K0*K0+1)*0);
+    value = tempX * tempY * sinh(sqrt(5)*vector_z) / sinh(sqrt(5)*pi);
+    state = 1;
 elseif(strcmp(logo,'BE_l3'))
-    state = 0;
+    tempX = cos(2*1);
+    tempY = cos(sqrt(K0*K0+1)*1);
+    value = tempX * tempY * sinh(sqrt(5)*vector_z) / sinh(sqrt(5)*pi);
+    state = 1;
 elseif(strcmp(logo,'BE_l4'))
-    state = 0;
+    tempX = cos(2*0);
+    tempY = cos(sqrt(K0*K0+1)*1);
+    value = tempX * tempY * sinh(sqrt(5)*vector_z) / sinh(sqrt(5)*pi);
+    state = 1;
 else
     state = 0;
 end
