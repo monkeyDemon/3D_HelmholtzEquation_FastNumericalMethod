@@ -6,7 +6,7 @@
 % if you want to run our code on your numerical examples
 % these functions need to be modified:
 % compute_BoundaryCondition.m            the function to compute boundary value of u
-% compute_SourceFunctionBoundary.m       the function to compute boundary value of source function f 
+% compute_SourceFunctionBoundary.m       the function to compute boundary value of source function f
 % compute_SourceFunction.m               the function to compute f(accurately saying is calculate f(x,:,z))
 % compute_realU.m                        the function to compute real solution of u
 % and you should change these variables according to the real situation:
@@ -27,9 +27,7 @@ warning off; %忽略解方程时的精度警告
 
 
 %% --------need to change on different numerical examples----------
-k0=pi;
-epr=0;
-K0=k0^2*epr;
+K0=0;
 
 M=63;
 
@@ -81,7 +79,7 @@ IK = sparse(1 : M, 1 : M, 1);
 %% ------利用dirichlet边界条件计算出各种边界面/边处的值---------
 
 % 利用dirichlet边界条件计算出各种边界面/边处的值
-para = [M, h, Xstart, Xend, Ystart, Yend, Zstart, Zend];
+para = [M, h, Xstart, Xend, Ystart, Yend, Zstart, Zend, K0];
 [U_bottom,U_bottom_state] = compute_BoundaryCondition( 'BP_bottom',para );    % compute U::0
 [U_left,U_left_state] = compute_BoundaryCondition( 'BP_left',para );          % compute U0::
 [U_right,U_right_state] = compute_BoundaryCondition( 'BP_right',para );       % compute UM+1::

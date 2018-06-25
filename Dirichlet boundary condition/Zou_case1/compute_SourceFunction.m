@@ -9,7 +9,7 @@ K0 = para(9);
 
 vector_y = [Ystart+h : h : Yend-h]';
 
-SFlist = -1*(3*pi*pi+K0)*sin(pi*x)*sin(pi*z)*sin(pi*vector_y);
+SFlist = -1*(3*pi*pi-K0*K0)*sin(pi*x)*sin(pi*z)*sin(pi*vector_y);
 
 
 end

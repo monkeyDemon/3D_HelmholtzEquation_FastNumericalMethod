@@ -82,7 +82,7 @@ for i =1:M-halfSize+1
    Z(:,i) =  vector_z(halfSize+i-1);
 end
 R = zeros(M-halfSize+1,M-halfSize+1);
-for j =1:M-halfSize
+for j =1:M-halfSize+1
     for k=1:M-halfSize+1
         R(j,k) = U((halfSize+j-2)*M+halfSize+k-1);
     end
