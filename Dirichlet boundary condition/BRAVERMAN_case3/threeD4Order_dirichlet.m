@@ -30,9 +30,9 @@ warning off; %忽略解方程时的精度警告
 
 
 %% --------need to change on different numerical examples----------
-K0=4*pi;
+K0=8*pi;
 
-M=15;
+M=63;
 
 Xstart=0;
 Xend=1;

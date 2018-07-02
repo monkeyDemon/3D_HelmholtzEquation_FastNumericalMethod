@@ -35,7 +35,7 @@ k0=pi;
 epr=0;
 K0=k0^2*epr;
 
-M=63;
+M=15;
 
 Xstart=0;
 Xend=1;
@@ -544,7 +544,7 @@ for i=1:M
 		x=h*i;
 		y=h*j;
 		z=h*extractZ;
-		real_U_gama(i,j)=compute_realU( x,y,z );	
+		real_U_gama(i,j)=compute_realU( x,y,z,K0 );	
 	end
 end
 figure
