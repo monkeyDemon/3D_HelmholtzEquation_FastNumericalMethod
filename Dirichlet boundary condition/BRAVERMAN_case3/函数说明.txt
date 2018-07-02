@@ -1,4 +1,4 @@
-3Dimension4阶的带有Dirichelet边界条件的Helmholtz方程的快速求解算法
+3Dimension 4阶的带有Dirichelet边界条件的Helmholtz方程的快速求解算法
 
 两个版本
 
