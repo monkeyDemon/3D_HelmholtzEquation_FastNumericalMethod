@@ -210,8 +210,9 @@ for i =1:M
     end
 end
 surf(X,Y,Z,R);
-shading interp;  
-hold on 
+shading interp;
+xlabel('x');ylabel('y');zlabel('z');
+hold off
 
 
 end

@@ -26,7 +26,7 @@ figure
 % colormap(summer); 
 % colormap(autumn); 
 % colormap(winter); 
-colormap(jet(32))
+%colormap(jet(32)); %颜色的离散数量
 halfSize = floor((M+1)/2);
 
 

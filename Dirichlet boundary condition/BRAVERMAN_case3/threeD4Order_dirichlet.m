@@ -2,20 +2,17 @@
 % this code can sovle the 3 dimentional Helmholtz function with dirichlet boundary condition
 % use a 4 order fast numerical method
 
-% this demo is the save memory version
-% the spatial complexity is O(M^2)
-
 % if you want to run our code on your numerical examples
 % these functions need to be modified:
-% threeD4Order_dirichlet_finegrid.m 
+% threeD4Order_dirichlet.m 
 % compute_BoundaryCondition.m            the function to compute boundary value of u
 % compute_SourceFunctionBoundary.m       the function to compute boundary value of source function f 
 % compute_SourceFunction.m               the function to compute f(accurately saying is calculate f(x,:,z))
 % compute_realU.m                        the function to compute real solution of u
 % and you should change these variables according to the real situation:
-% M,N,K 
+% M
 % Xstart,Ystart,Zstart 
-% Xend,Yend,Zend
+% Xend,  Yend,  Zend
 % hasSourceFunction
 
 
@@ -32,7 +29,7 @@ warning off; %忽略解方程时的精度警告
 %% --------need to change on different numerical examples----------
 K0=8*pi;
 
-M=63;
+M=15;
 
 Xstart=0;
 Xend=1;
