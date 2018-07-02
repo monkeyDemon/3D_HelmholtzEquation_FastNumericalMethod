@@ -3,6 +3,7 @@
 % use a 4 order fast numerical method
 
 % this demo is the save memory version
+% only solve one plane in three-dimensional space
 % the spatial complexity is O(M^2)
 
 % if you want to run our code on your numerical examples
@@ -13,9 +14,9 @@
 % compute_SourceFunction.m               the function to compute f(accurately saying is calculate f(x,:,z))
 % compute_realU.m                        the function to compute real solution of u
 % and you should change these variables according to the real situation:
-% M,N,K 
+% M
 % Xstart,Ystart,Zstart 
-% Xend,Yend,Zend
+% Xend,  Yend,  Zend
 % hasSourceFunction
 % extractZ
 
@@ -530,13 +531,15 @@ end
 toc
 
 
+% get and draw the cavity interface
 Cavity_interface=zeros(M,M);
-% get the cavity interface
 for i=1:M
 	for j=1:M
 		Cavity_interface(i,j)=U((i-1)*M+j);
 	end
 end
+plot2Dsolution( para, extractZ, Cavity_interface);
+
 
 % draw the real value of U
 real_U_gama=zeros(M,M);
@@ -545,11 +548,10 @@ for i=1:M
 		x=h*i;
 		y=h*j;
 		z=h*extractZ;
-		real_U_gama(i,j)=compute_realU( x,y,z );	
+		real_U_gama(j,i)=compute_realU( x,y,z );	
 	end
 end
-figure
-mesh(Xstart+hx:hx:Xend-hx,Ystart+hy:hy:Yend-hy,real_U_gama);
+plot2Dsolution( para, extractZ, real_U_gama);
 
 
 % compute error
@@ -564,9 +566,3 @@ e2=sqrt(tempE)
 % tempE=sum(abs(ErrorM));
 % tempE=tempE*(Xend-Xstart)*(Yend-Ystart)*(Zend-Zstart)/(M*N*K);
 % e2=sqrt(tempE)
-
-
-
-
-figure
-mesh(Xstart+hx:hx:Xend-hx,Ystart+hy:hy:Yend-hy,Cavity_interface);
