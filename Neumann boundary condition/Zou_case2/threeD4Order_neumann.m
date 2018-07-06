@@ -9,6 +9,8 @@
 % compute_SourceFunctionBoundary.m       the function to compute boundary value of source function f
 % compute_SourceFunction.m               the function to compute f(accurately saying is calculate f(x,:,z))
 % compute_realU.m                        the function to compute real solution of u
+% compute_NeumannCondition.m             the function to compute neumann boundary condition on (:,:,L+1)
+% compute_SourceFunction_derivativeZ.m   the function to compute the partial derivative fz of the source function along the z direction
 % and you should change these variables according to the real situation:
 % M,N,K 
 % Xstart,Ystart,Zstart 
@@ -25,8 +27,17 @@ format long;
 warning off; %忽略解方程时的精度警告
 
 
-
 %% --------need to change on different numerical examples----------
+% this numerical example is modified by Zhou's case 2
+% just turn the x-axis into the z-axis, y-axis into x-axis, z-axis into y-axis
+% 具体表达式如下：
+% u(x,y,z) = sin(pix)sin(piy)[2sinh(sqrt(2)*piz)+sinh(sqrt(2)*pi(1-z))]/sinh(sqrt(2)pi)
+% 波数K=0，源函数f(i,j,k)=0, Dirichlet边界条件：
+% u(x,y,z) = sin(pix)sin(piy), z=0
+% u(x,y,z) = 2sin(pix)sin(piy), z=1
+% 0 , y,z属于{0,1}
+
+
 K0=0;
 
 M=63;
@@ -317,61 +328,19 @@ end
 
 
 %% ------------------------compute F_ba----------------------------
-% tic
-% if hasSourceFunction==1
-%     F = zeros(M*M*M,1);
-%     for kk = 1:M
-%         for ii =1:M
-%             x=Xstart + h*ii;
-%             z=Zstart + h*kk;
-%             F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M) = compute_SourceFunction(x,z,para);
-%         end
-%     end
-% 
-%     F_ba = zeros(M*M*M,1);
-%     for kk=1:M
-%         for i =1:M
-%             for j = 1:M
-%                 tempkk = 0;
-%                 tempSNj = SM(j,:);
-%                 for ii =1:M
-%                     x=Xstart + h*ii;
-%                     z=Zstart + h*kk;
-%                     tempkk = tempkk + SM(i,ii) * tempSNj * F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
-%                 end
-%                 F_ba((i-1)*M*M+(j-1)*M+kk) = tempkk;
-%             end
-%         end
-%     end
-% end
-% toc
-% clear F % 该变量已无作用，占用大量内存，清理
-
-
-
-%% --------------------并行compute F_ba----------------------------
+tic
 if hasSourceFunction==1
-    delete(gcp('nocreate')); %delete the current pool 
-    parpool
-    disp('计算F_bar')
-    tic
-    F = zeros(M*M,M);
-    parfor kk = 1:M
-        tF = zeros(M*M*M,1);
-        tempF = zeros(M*M,1);
+    F = zeros(M*M*M,1);
+    for kk = 1:M
         for ii =1:M
             x=Xstart + h*ii;
             z=Zstart + h*kk;
-            tempF((ii-1)*M+1:ii*M) = compute_SourceFunction(x,z,para);
-%             F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M) = compute_SourceFunction(x,z,para);
+            F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M) = compute_SourceFunction(x,z,para);
         end
-        F(:,kk)=tempF;
     end
-    
-    F_ba_ = zeros(M*M,M);
-    parfor kk=1:M
-        tempF = F(:,kk);
-        tempF_bar = ones(M*M,1);
+
+    F_ba = zeros(M*M*M,1);
+    for kk=1:M
         for i =1:M
             for j = 1:M
                 tempkk = 0;
@@ -379,40 +348,83 @@ if hasSourceFunction==1
                 for ii =1:M
                     x=Xstart + h*ii;
                     z=Zstart + h*kk;
-%                     tempkk = tempkk + SM(i,ii) * tempSNj * F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
-                    tempkk = tempkk + SM(i,ii) * tempSNj * tempF((ii-1)*M+1:ii*M);
+                    tempkk = tempkk + SM(i,ii) * tempSNj * F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
                 end
-%                 indexx = (i-1)*M*M+(j-1)*M+kk;
-%                 F_ba(indexx) = tempkk;
-                tempF_bar((i-1)*M+j) = tempkk;
+                F_ba((i-1)*M*M+(j-1)*M+kk) = tempkk;
             end
         end
-        F_ba_(:,kk)=tempF_bar;
     end
-    toc
-    clear F % 该变量已无作用，占用大量内存，清理
-    
-    F_ba = zeros(M*M*M,1);
-    for k =1:M
-       F_ba(k:M:(M-1)*M*M+(M-1)*M+k)=F_ba_(:,k); 
-    end
-    clear F_ba_ % 该变量已无作用，占用大量内存，清理
 end
+toc
+clear F % 该变量已无作用，占用大量内存，清理
+
+
+
+%% --------------------并行compute F_ba----------------------------
+% if hasSourceFunction==1
+%     delete(gcp('nocreate')); %delete the current pool 
+%     parpool
+%     disp('计算F_bar')
+%     tic
+%     F = zeros(M*M,M);
+%     parfor kk = 1:M
+%         tF = zeros(M*M*M,1);
+%         tempF = zeros(M*M,1);
+%         for ii =1:M
+%             x=Xstart + h*ii;
+%             z=Zstart + h*kk;
+%             tempF((ii-1)*M+1:ii*M) = compute_SourceFunction(x,z,para);
+% %             F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M) = compute_SourceFunction(x,z,para);
+%         end
+%         F(:,kk)=tempF;
+%     end
+%     
+%     F_ba_ = zeros(M*M,M);
+%     parfor kk=1:M
+%         tempF = F(:,kk);
+%         tempF_bar = ones(M*M,1);
+%         for i =1:M
+%             for j = 1:M
+%                 tempkk = 0;
+%                 tempSNj = SM(j,:);
+%                 for ii =1:M
+%                     x=Xstart + h*ii;
+%                     z=Zstart + h*kk;
+% %                     tempkk = tempkk + SM(i,ii) * tempSNj * F((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
+%                     tempkk = tempkk + SM(i,ii) * tempSNj * tempF((ii-1)*M+1:ii*M);
+%                 end
+% %                 indexx = (i-1)*M*M+(j-1)*M+kk;
+% %                 F_ba(indexx) = tempkk;
+%                 tempF_bar((i-1)*M+j) = tempkk;
+%             end
+%         end
+%         F_ba_(:,kk)=tempF_bar;
+%     end
+%     toc
+%     clear F % 该变量已无作用，占用大量内存，清理
+%     
+%     F_ba = zeros(M*M*M,1);
+%     for k =1:M
+%        F_ba(k:M:(M-1)*M*M+(M-1)*M+k)=F_ba_(:,k); 
+%     end
+%     clear F_ba_ % 该变量已无作用，占用大量内存，清理
+% end
 
 
 
 
-%% ------------------求解方程（计算U_bar)--------------------------
-disp('求解方程（计算U_bar)')
+%% ------------------求解第一个 Phi::L 与 Phi::L+1 之间的方程--------------------------
+disp('求解第一个 Phi::L 与 Phi::L+1 之间的方程')
 tic
 p1 = 1+h*h*K0*K0/12;
 p2 = h*h/6;
 p4 = K0*K0;
 
-% storage cavity interface
-U_bar = zeros(M*M*M,1);
+% store useful intermediate variables
+D_alpha = zeros(M*M,1);
+D_beta = zeros(M*M,1);
+R1 = zeros(M*M,1);
 for i=1:M
-	
 	for j=1:M
          % calculation the left term of the equation------------------------------------------------------------------
         %% compute Hij
@@ -555,11 +567,10 @@ for i=1:M
          alpha_ij = U(M,M);
          beta_ij = Htop(M);
          rij = R(M);
-         
-         
-         
-         
-		 % [BarV,flag,relres,iter]=bicgstab(Hij,right_term,1e-14,1800);
+
+         D_alpha((i-1)*M+j) = alpha_ij;
+         D_beta((i-1)*M+j) = beta_ij;
+         R1((i-1)*M+j) = rij;
          
 	end
 end
@@ -567,56 +578,108 @@ toc
 clear F_ba  % 该变量已无作用，占用大量内存，清理
 
 
+%% ------------------求解第一个 Phi::L 与 Phi::L+1 之间的方程--------------------------
+disp('求解第二个 Phi::L 与 Phi::L+1 之间的方程')
+tic
+% 初始化重要的中间矩阵变量
+% 由于这些变量都是对角阵，我们只想初始化为向量
+IMN = ones(M*M,1);
+
+Lambda_IN = zeros(M*M,1);
+for i = 1:M
+    Lambda_IN((i-1)*M+1:i*M) = Lambda(i);
+end
+
+IM_Miu = zeros(M*M,1);
+for i = 1:M
+    IM_Miu((i-1)*M+1:i*M) = Miu;
+end
+
+Lambda_Miu = zeros(M*M,1);
+for i = 1:M
+    Lambda_Miu((i-1)*M+1:i*M) = Lambda(i)*Miu;
+end
+
+% 初始化矩阵B C D
+B = (1+K0*K0*h*h/6) + h*h*(1/6)*Lambda_IN + h*h*(1/6)*IM_Miu;
+C = ((2/3)*h*h + (1/12)*K0*K0*(h^4))*(Lambda_IN + IM_Miu) + ((1/6)*h^4)*Lambda_Miu + ( K0*K0*h*h*(5/6) - 2);
+D = (1+K0*K0*h*h/12) + (1/6)*h*h*(Lambda_IN + IM_Miu);
+
+% 计算g
+g = compute_NeumannCondition(para);
+g = 2*h*g;
+
+% 计算源函数沿z方向偏导数fz
+fz = compute_SourceFunction_derivativeZ( para );
+fz = fz*((h^3)/3);
+
+% 计算R2
+temp = g + fz;
+R2 = zeros(M*M,1);
+for j =1:M
+    Mtemp = SM * temp((j-1)*M+1:j*M);
+    for i = 1:M
+        R2((i-1)*M+1:i*M) = R2((i-1)*M+1:i*M) + Mtemp * SM(i,j);
+    end
+end
+
+
+% 计算R3 未完待续。。。。。。。。。。。。。。。。。。。
+
+
+toc
+
+
 %% compute U
-% disp('计算最终数值解U（利用U_bar）')
-% tic
-% U = zeros(M*M*M,1);
-% for i=1:M
-%     for j =1:M
-%         for kk = 1:M
-%             tempkk = 0;
-%             tempSNj = SM(j,:);
-%             for ii =1:M
-%                 x=Xstart + h*ii;
-%                 z=Zstart + h*kk;
-%                 tempkk = tempkk + SM(i,ii) * tempSNj * U_bar((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
-%             end
-%             U((i-1)*M*M+(j-1)*M+kk) = tempkk;
-%         end
-%     end
-% end
-% toc
-
-
-%% compute U （使用并行）
-delete(gcp('nocreate')); %delete the current pool 
-parpool
 disp('计算最终数值解U（利用U_bar）')
 tic
-UU = zeros(M*M,M);
-parfor i=1:M
-    Ujk = zeros(M*M,1);
-    tempSM = SM;
-    Ubar_temp = U_bar;
+U = zeros(M*M*M,1);
+for i=1:M
     for j =1:M
         for kk = 1:M
             tempkk = 0;
-            tempSNj = tempSM(j,:);
+            tempSNj = SM(j,:);
             for ii =1:M
                 x=Xstart + h*ii;
                 z=Zstart + h*kk;
-                tempkk = tempkk + tempSM(i,ii) * tempSNj * Ubar_temp((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
+                tempkk = tempkk + SM(i,ii) * tempSNj * U_bar((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
             end
-            Ujk((j-1)*M+kk) = tempkk;
+            U((i-1)*M*M+(j-1)*M+kk) = tempkk;
         end
     end
-    UU(:,i) = Ujk;
 end
 toc
-U = zeros(M*M*M,1);
-for i=1:M
-    U((i-1)*M*M+1:i*M*M) = UU(:,i);
-end
+
+
+%% compute U （使用并行）
+% delete(gcp('nocreate')); %delete the current pool 
+% parpool
+% disp('计算最终数值解U（利用U_bar）')
+% tic
+% UU = zeros(M*M,M);
+% parfor i=1:M
+%     Ujk = zeros(M*M,1);
+%     tempSM = SM;
+%     Ubar_temp = U_bar;
+%     for j =1:M
+%         for kk = 1:M
+%             tempkk = 0;
+%             tempSNj = tempSM(j,:);
+%             for ii =1:M
+%                 x=Xstart + h*ii;
+%                 z=Zstart + h*kk;
+%                 tempkk = tempkk + tempSM(i,ii) * tempSNj * Ubar_temp((kk-1)*M*M+(ii-1)*M+1:(kk-1)*M*M+(ii-1)*M+M);
+%             end
+%             Ujk((j-1)*M+kk) = tempkk;
+%         end
+%     end
+%     UU(:,i) = Ujk;
+% end
+% toc
+% U = zeros(M*M*M,1);
+% for i=1:M
+%     U((i-1)*M*M+1:i*M*M) = UU(:,i);
+% end
 
 %--------------------------end the timer-----------------------------------
 
