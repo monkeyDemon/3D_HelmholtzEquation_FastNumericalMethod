@@ -5,7 +5,7 @@ function [ fz ] = compute_SourceFunction_derivativeZ( para )
 % 本算例的源函数为0
 % 因此无需计算fz
 
-% M = para(1);
+M = para(1);
 % h = para(2);
 % Xstart = para(3);
 % Xend = para(4);

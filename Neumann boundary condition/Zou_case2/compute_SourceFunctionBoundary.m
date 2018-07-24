@@ -31,6 +31,22 @@ elseif(strcmp(logo,'BF_front'))
     state = 0;
 elseif(strcmp(logo,'BF_back'))
     state = 0;
+elseif(strcmp(logo,'BF_top_K+2'))
+%     value = zeros(M*M,1);
+%     tempY=sin(pi*vector_y);
+%     for xindex=1:M
+%        value((xindex-1)*M+1:xindex*M) = sin(pi*vector_x(xindex))*tempY; 
+%     end
+%     state = 1;
+    state = 0;
+elseif(strcmp(logo,'BF_top_K'))
+%     value = zeros(M*M,1);
+%     tempY=sin(pi*vector_y);
+%     for xindex=1:M
+%        value((xindex-1)*M+1:xindex*M) = sin(pi*vector_x(xindex))*tempY; 
+%     end
+%     state = 1;
+    state = 0;
 else
    throw('error!'); 
 end

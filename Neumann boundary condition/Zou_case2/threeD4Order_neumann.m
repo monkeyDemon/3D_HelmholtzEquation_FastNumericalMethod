@@ -40,7 +40,7 @@ warning off; %忽略解方程时的精度警告
 
 K0=0;
 
-M=63;
+M=15;
 
 Xstart=0;
 Xend=1;
@@ -60,7 +60,7 @@ hy=(Yend-Ystart)/(M+1);
 hz=(Zend-Zstart)/(M+1);
 h=hx; 
 
-    
+
 Lambda=2*(M+1)*sin((1:M)*pi/(2*(M+1)))/(Xend-Xstart);
 Lambda=-Lambda.*Lambda;
 
@@ -562,11 +562,11 @@ for i=1:M
          % parameter matrix of U_::K+1
          Htop = ( p2*(Lambda(i)+Miu(j)) + p1 ) * ( L \ aN2 );
          
-         R = L \ right_term;
+         R_right = L \ right_term;
          
          alpha_ij = U(M,M);
          beta_ij = Htop(M);
-         rij = R(M);
+         rij = R_right(M);
 
          D_alpha((i-1)*M+j) = alpha_ij;
          D_beta((i-1)*M+j) = beta_ij;
@@ -575,12 +575,12 @@ for i=1:M
 	end
 end
 toc
-clear F_ba  % 该变量已无作用，占用大量内存，清理
 
 
-%% ------------------求解第一个 Phi::L 与 Phi::L+1 之间的方程--------------------------
-disp('求解第二个 Phi::L 与 Phi::L+1 之间的方程')
+%% ------------------计算第二个 Phi::L 与 Phi::L+1 之间的方程,并求解联立后的方程--------------------------
+disp('计算第二个 Phi::L 与 Phi::L+1 之间的方程,并求解联立后的方程')
 tic
+
 % 初始化重要的中间矩阵变量
 % 由于这些变量都是对角阵，我们只想初始化为向量
 IMN = ones(M*M,1);
@@ -623,11 +623,213 @@ for j =1:M
     end
 end
 
+% 计算R3
+[F_top_K2,F_top_K2_state] = compute_SourceFunctionBoundary( 'BF_top_K+2',para );         % compute F::K+2
+[F_top_K,F_top_K_state] = compute_SourceFunctionBoundary( 'BF_top_K',para );             % compute F::K
 
-% 计算R3 未完待续。。。。。。。。。。。。。。。。。。。
+% F_top_K_bar = （SM×SN）F::K 
+F_top_K_bar = zeros(M*M,1);
+if(F_top_K_state==1) 
+    for j = 1:M
+        SNU = SM * F_top_K((j-1)*M+1:(j-1)*M+M);
+        for i = 1:M
+            F_top_K_bar((i-1)*M+1:(i-1)*M+M) = F_top_K_bar((i-1)*M+1:(i-1)*M+M) + SM(i,j) * SNU;
+        end
+    end
+end
 
+% F_top_K2_bar = （SM×SN）F::K+2 
+F_top_K2_bar = zeros(M*M,1);
+if(F_top_K2_state==1) 
+    for j = 1:M
+        SNU = SM * F_top_K2((j-1)*M+1:(j-1)*M+M);
+        for i = 1:M
+            F_top_K2_bar((i-1)*M+1:(i-1)*M+M) = F_top_K2_bar((i-1)*M+1:(i-1)*M+M) + SM(i,j) * SNU;
+        end
+    end
+end
 
+R3 = zeros(M*M,1);
+if(F_top_state==1)
+    R3 = R3 + F_top_bar' * (Lambda_Miu + IM_Miu + Lambda_IN + 12*IMN/(h*h));
+end
+if(F_top_K_state==1) 
+    R3 = R3 - F_top_K_bar' * 2 * (IM_Miu + Lambda_IN);
+end
+if(F_top_K2_state==1) 
+    R3 = R3 - F_top_K2_bar' * 2 * (IM_Miu + Lambda_IN);
+end
+R3 = R3 *(h^4)/12;
+
+% 求解联立后的方程
+A = zeros(M*M,1);
+R = zeros(M*M,1);
+A = C -2.*(D).*(1./D_alpha).*(D_beta);
+R = R3 -D.*(1./B).*(R2) - 2.*(D).*(1./D_alpha).*(R1);
+
+U_top_bar = R./A;
 toc
+
+
+
+%% 使用 U::K+1_Bar 解出 U_bar
+disp('使用U::K+1解出U')
+tic
+U_bar = zeros(M*M*M,1);
+for i=1:M
+	for j=1:M
+         % calculation the left term of the equation------------------------------------------------------------------
+        %% compute Hij
+         temp = (Lambda(i)+Miu(j))*IK + AK;
+         Hij = p1*temp + p2*(Lambda(i)*Miu(j)*IK + (Miu(j)+Lambda(i))*AK) + p4*IK;
+        
+        %% compute Fij_ba & Qij (coefficient matrix of F_bar)----------------------------------
+         Fij_ba = zeros(M,1);
+         if hasSourceFunction==1
+             Qij = temp * h*h/12 + IK;
+             Fij_ba = Qij * F_ba((i-1)*M*M+(j-1)*M+1:(i-1)*M*M+(j-1)*M+M);
+         end
+         
+        %% compute BUij_bar---------------------------------------------------
+         BU_bar = zeros(M,1);
+         if(U_bottom_state==1)
+            BP_bottom_bar = zeros(M,1);
+            BP_bottom_bar(1) = ((Lambda(i)+Miu(j))*p2 + p1)*U_bottom_bar((i-1)*M+j);
+            BU_bar = BU_bar + BP_bottom_bar;
+         end
+         if(U_left_state==1)
+            BP_left_bar = SM(i,1) * p2 * U_left_bar_AK((j-1)*M+1:(j*M));
+            BP_left_bar = BP_left_bar + SM(i,1) * (Miu(j)*p2 + p1) * U_left_bar_IK((j-1)*M+1:(j*M));
+            BU_bar = BU_bar + BP_left_bar;
+         end
+         if(U_right_state==1)
+            BP_right_bar = SM(i,M)* p2 * U_right_bar_AK((j-1)*M+1:(j*M));
+            BP_right_bar = BP_right_bar + SM(i,M)*(Miu(j)*p2 + p1)*U_right_bar_IK((j-1)*M+1:(j*M));
+            BU_bar = BU_bar + BP_right_bar;
+         end
+         if(U_front_state==1)
+            BP_front_bar = (p2*Lambda(i) + p1) * SM(j,1) * U_front_bar((i-1)*M+1:(i*M));
+            BP_front_bar = BP_front_bar + p2 * SM(j,1) * AK * U_front_bar((i-1)*M+1:(i*M));
+            BU_bar = BU_bar + BP_front_bar;
+         end
+         if(U_back_state==1)
+            BP_back_bar = (p2*Lambda(i) + p1) * SM(j,M) * U_back_bar((i-1)*M+1:(i*M));
+            BP_back_bar = BP_back_bar + p2 * SM(j,M) * AK * U_back_bar((i-1)*M+1:(i*M));
+            BU_bar = BU_bar + BP_back_bar;
+         end
+        
+         if(U_t1_state==1)
+             BE_t1_bar = zeros(M,1);
+             BE_t1_bar(M) = p2 * SM(j,1) * U_t1_bar(i);
+             BU_bar = BU_bar + BE_t1_bar;
+         end
+         if(U_t2_state==1)
+             BE_t2_bar = zeros(M,1);
+             BE_t2_bar(M) = p2 * SM(i,M) * U_t2_bar(j);
+             BU_bar = BU_bar + BE_t2_bar;
+         end
+         if(U_t3_state==1)
+             BE_t3_bar = zeros(M,1);
+             BE_t3_bar(M) = p2 * SM(j,M) * U_t3_bar(i);
+             BU_bar = BU_bar + BE_t3_bar;
+         end
+         if(U_t4_state==1)
+             BE_t4_bar = zeros(M,1);
+             BE_t4_bar(M) = p2 * SM(i,1) * U_t4_bar(j);
+             BU_bar = BU_bar + BE_t4_bar;
+         end
+         if(U_b1_state==1)
+             BE_b1_bar = zeros(M,1);
+             BE_b1_bar(1) = p2 * SM(j,1) * U_b1_bar(i);
+             BU_bar = BU_bar + BE_b1_bar;
+         end
+         if(U_b2_state==1)
+             BE_b2_bar = zeros(M,1);
+             BE_b2_bar(1) = p2 * SM(i,M) * U_b2_bar(j);
+             BU_bar = BU_bar + BE_b2_bar;
+         end
+         if(U_b3_state==1)
+             BE_b3_bar = zeros(M,1);
+             BE_b3_bar(1) = p2 * SM(j,M) * U_b3_bar(i);
+             BU_bar = BU_bar + BE_b3_bar;
+         end
+         if(U_b4_state==1)
+             BE_b4_bar = zeros(M,1);
+             BE_b4_bar(1) = p2 * SM(i,1) * U_b4_bar(j);
+             BU_bar = BU_bar + BE_b4_bar;
+         end
+         if(U_l1_state==1)
+             BE_l1_bar = p2 * SM(i,1) * SM(j,1) * U_l1_bar;
+             BU_bar = BU_bar + BE_l1_bar;
+         end
+         if(U_l2_state==1)
+             BE_l2_bar = p2 * SM(i,M) * SM(j,1) * U_l2_bar;
+             BU_bar = BU_bar + BE_l2_bar;
+         end
+         if(U_l3_state==1)
+             BE_l3_bar = p2 * SM(i,M) * SM(j,M) * U_l3_bar;
+             BU_bar = BU_bar + BE_l3_bar;
+         end
+         if(U_l4_state==1)
+             BE_l4_bar = p2 * SM(i,1) * SM(j,M) * U_l4_bar;
+             BU_bar = BU_bar + BE_l4_bar;
+         end
+        
+        %% compute BFij_bar---------------------------------------------------
+         BF_bar = zeros(M,1);
+         
+         if(F_top_state==1)
+            BF_top_bar = zeros(M,1);
+            BF_top_bar(M) = p1 * F_top_bar((i-1)*M+j);
+            BF_bar = BF_bar + BF_top_bar;
+         end
+         if(F_bottom_state==1)
+            BF_bottom_bar = zeros(M,1);
+            BF_bottom_bar(1) = p1 * F_bottom_bar((i-1)*M+j);
+            BF_bar = BF_bar + BF_bottom_bar;
+         end
+         if(F_left_state==1)
+            BF_left_bar = SM(i,1) * p1 * F_left_bar((j-1)*M+1:(j*M));
+            BF_bar = BF_bar + BF_left_bar;
+         end
+         if(F_right_state==1)
+            BF_right_bar = SM(i,M) * p1 * F_right_bar((j-1)*M+1:(j*M));
+            BF_bar = BF_bar + BF_right_bar;
+         end
+        if(F_front_state==1)
+            BF_front_bar = p1 * SM(j,1) * F_front_bar((i-1)*M+1:(i*M));
+            BF_bar = BF_bar + BF_front_bar;
+         end
+         if(F_back_state==1)
+            BF_back_bar = p1 * SM(j,M) * F_back_bar((i-1)*M+1:(i*M));
+            BF_bar = BF_bar + BF_back_bar;
+         end
+        
+		%% compute F^
+		 right_term =Fij_ba +BF_bar -BU_bar/(h*h);
+
+        %% LU decomposition
+         [L, U] = lu(Hij);
+
+         % parameter matrix of U_::K+1
+         Htop = ( p2*(Lambda(i)+Miu(j)) + p1 ) * ( L \ aN2 );
+         Htop = Htop * U_top_bar((i-1)*M+j);
+         
+         R_right = L \ right_term;
+         R_right = R_right - Htop;
+         
+         BarV = U \ R_right;
+         
+         % 为了计算的加速，使用一种特殊的排列方式
+         % U_bar((i-1)*M*M+(j-1)*M+1:(i-1)*M*M+j*M) = U \ R_right;  %正常的排列顺序
+         for k =1:M
+             U_bar((k-1)*M*M+(i-1)*M+j) = BarV(k);
+         end
+         
+	end
+end
+toc
+clear F_ba  % 该变量已无作用，占用大量内存，清理
 
 
 %% compute U
