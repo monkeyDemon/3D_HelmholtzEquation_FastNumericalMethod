@@ -18,7 +18,7 @@ vector_z = [Zstart+h : h : Zend-h]';
 %% 开始绘图
 figure
 % 选择色带
-colormap(jet(64))
+colormap(jet(128));
 % colormap(hsv);  
 % colormap(hsv); 
 % colormap(jet); 
@@ -211,7 +211,7 @@ for i =1:M
 end
 surf(X,Y,Z,R);
 shading interp;  
-hold on 
+hold off
 
 
 end

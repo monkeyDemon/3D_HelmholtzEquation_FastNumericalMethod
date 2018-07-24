@@ -899,11 +899,25 @@ disp(totalMemory);
 
 
 
-% ---------------------------可视化-----------------------------------
+%% ---------------------------可视化-----------------------------------
 disp('正在绘制数值解...')
+% 绘制全局数值解
 plot3Dsolution( para,U);
 
+% 绘制某一个面的数值解
+% z_plane = floor(M/2); % 标识绘制哪个平面
+z_plane = M; % 标识绘制哪个平面
+U_gama=zeros(M,M);
+for i=1:M
+	for j=1:M
+		U_gama(j,i)=U((i-1)*M*M+(j-1)*M+z_plane);
+	end
+end
+plot2Dsolution( para, z_plane, U_gama);
 
+
+%% 利用解析解计算数值误差
+% 计算解析解
 % compute the real value of U
 real_U=zeros(M*M*M,1);
 for i=1:M
@@ -917,8 +931,7 @@ for i=1:M
 	end
 end
 
-
-
+% 计算误差
 % % compute U_ba error
 ErrorM=real_U-U;
 tempE=sum(abs(ErrorM).*abs(ErrorM));
