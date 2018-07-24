@@ -36,7 +36,7 @@ k0=pi;
 epr=0;
 K0=k0^2*epr;
 
-M=63;
+M=15;
 
 Xstart=0;
 Xend=1;
@@ -535,7 +535,7 @@ toc
 Cavity_interface=zeros(M,M);
 for i=1:M
 	for j=1:M
-		Cavity_interface(i,j)=U((i-1)*M+j);
+		Cavity_interface(j,i)=U((i-1)*M+j);
 	end
 end
 plot2Dsolution( para, extractZ, Cavity_interface);
