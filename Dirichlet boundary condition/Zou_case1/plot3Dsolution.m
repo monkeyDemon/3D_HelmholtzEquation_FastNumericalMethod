@@ -18,6 +18,7 @@ vector_z = [Zstart+h : h : Zend-h]';
 %% 开始绘图
 figure
 % 选择色带
+colormap(jet(128));
 % colormap(hsv); 
 % colormap(jet); 
 % colormap(hot); 

@@ -7,6 +7,8 @@ Xstart = para(3);
 Xend = para(4);
 Ystart = para(5);
 Yend = para(6);
+Zstart = para(7);
+Zend = para(8);
 
 
 figure
@@ -15,7 +17,11 @@ Zmesh = ones(M,M)*h*extractZ;
 surf(Xmesh,Ymesh,Zmesh,U_2D);
 xlabel('x');ylabel('y');zlabel('z');
 colorbar;
+colormap(jet(128));
 shading interp;  
+set(gca, 'xlim', [Xstart,Xend]);
+set(gca, 'ylim', [Ystart,Yend]);
+set(gca, 'zlim', [Zstart,Zend]);
 
 
 end
